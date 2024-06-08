@@ -1,8 +1,11 @@
 import express from "express";
 const app = express();
-app.get("/", (_req, res) => {
-	res.send("Hello World!");
-});
+import router from "./routes/router.js";
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(router);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
