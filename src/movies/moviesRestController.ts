@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getMovie, getMovies } from "../apiService/tmdb.api.service.js";
+import { getMovie, getMovies } from "../tmdb/tmdb.api.service.js";
 
 const router = Router();
 

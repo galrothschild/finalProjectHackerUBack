@@ -1,3 +1,5 @@
+import ts from "typescript";
+
 export default {
 	testEnvironment: "node",
 	preset: "ts-jest/presets/default-esm",
@@ -15,4 +17,10 @@ export default {
 		"!src/**/*.d.ts",
 		"!src/**/*.d.mts",
 	],
+	globals: {
+		"ts-jest": {
+			tsconfig: "tsconfig.json",
+			useESM: true,
+		},
+	},
 };
