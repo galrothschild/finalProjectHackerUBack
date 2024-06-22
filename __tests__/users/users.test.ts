@@ -59,8 +59,7 @@ describe("users", () => {
 			createdUserId = users.body[0]._id;
 		}
 		const res = await request.delete(`/users/${createdUserId}`);
-		console.log(res.status);
-		expect(1).toBe(1);
+		expect(res.status).toBe(204);
 	}, 20000);
 
 	// it("Should get 1 user from the database", async () => {

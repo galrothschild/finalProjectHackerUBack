@@ -13,7 +13,6 @@ export const createUser = async (user: IUser) => {
 // delete user from the database
 export const deleteUser = async (userId: string) => {
 	try {
-		console.log("Deleting user: ".bgGreen, userId);
 		const user = await UserModel.findByIdAndDelete(userId);
 		return user;
 	} catch (error) {

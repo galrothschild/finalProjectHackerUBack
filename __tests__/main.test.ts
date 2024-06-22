@@ -6,10 +6,17 @@ describe("main", () => {
 	});
 	const request = supertest.agent(app);
 
-	it("should get a list of movies from TMDB", async () => {
+	it("should get a list of movies from TMDB page 1", async () => {
 		const res = await request.get("/movies/");
 		expect(res.status).toEqual(200);
 		expect(res.body).toHaveProperty("page", 1);
+		expect(res.body).toHaveProperty("results");
+		expect(Array.isArray(res.body.results)).toBe(true);
+	});
+	it("should get a list of movies from TMDB page 1", async () => {
+		const res = await request.get("/movies/").send({ page: 3 });
+		expect(res.status).toEqual(200);
+		expect(res.body).toHaveProperty("page", 3);
 		expect(res.body).toHaveProperty("results");
 		expect(Array.isArray(res.body.results)).toBe(true);
 	});
