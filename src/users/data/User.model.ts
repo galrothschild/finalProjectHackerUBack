@@ -10,6 +10,7 @@ export type IUser = {
 		last: string;
 		middle?: string;
 	};
+	isAdmin: boolean;
 };
 export type IUserDocument = IUser & mongoose.Document;
 
@@ -23,6 +24,7 @@ const UserSchema = new mongoose.Schema<IUserDocument>({
 		last: { type: String, required: true },
 		middle: { type: String },
 	},
+	isAdmin: { type: Boolean, default: false },
 });
 
 export const UserModel = mongoose.model<IUserDocument>("User", UserSchema);

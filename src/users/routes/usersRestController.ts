@@ -7,13 +7,15 @@ import {
 	updateUser,
 } from "../data/usersDataAccess.service.js";
 import { handleError } from "../../utils/handleError.js";
+import { normalizeUser } from "../utils/normalizeUser.js";
 
 const router = Router();
 
 router.post("/", async (req, res) => {
 	try {
 		const user = req.body;
-		const createdUser = await createUser(user);
+		const normalizedUser = normalizeUser(user);
+		const createdUser = await createUser(normalizedUser);
 		return res.status(201).json(createdUser);
 	} catch (error) {
 		return handleError(res, 500, error, "Error creating user");
