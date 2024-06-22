@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
-import type { IUser } from "../../users/models/IUser.model";
 import type { Types } from "mongoose";
+import type { IUser } from "../../users/data/User.model.js";
 
 const key = process.env.TOKEN_SECRET || "secret";
 export const generateToken = (
 	user: IUser | { _id: Types.ObjectId; isAdmin: boolean; isBusiness: boolean },
 ) => {
-	const { _id, isAdmin, isBusiness } = user;
-	const token = jwt.sign({ _id, isAdmin, isBusiness }, key, {
+	const { _id, isAdmin } = user;
+	const token = jwt.sign({ _id, isAdmin }, key, {
 		expiresIn: "1h",
 	});
 	return token;
