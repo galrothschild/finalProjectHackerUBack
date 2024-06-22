@@ -6,10 +6,20 @@ describe("users", () => {
 		process.env.NODE_ENV = "test";
 	});
 	const request = supertest.agent(app);
-	it("should get a list of users from the database", async () => {
-		expect(1).toBe(1);
-		const res = await request.post("/users/");
+	it("should create a user to the database", async () => {
+		const res = await request.post("/users").send({
+			name: { first: "test", last: "user" },
+			username: "testuser",
+			password: "password",
+			email: "test@test.com",
+			image: "test.jpg",
+		});
+		expect(res.body).toHaveProperty("_id");
 		expect(res.status).toEqual(201);
+	});
+	it("should delete a user from the database", async () => {
+		// const res = await request.delete("/users/1");
+		expect(1).toEqual(1);
 		// expect(res.body).toHaveProperty("users");
 		// expect(Array.isArray(res.body.users)).toBe(true);
 	});

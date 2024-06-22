@@ -4,7 +4,6 @@ const bearer = `Bearer ${process.env.API_READ_TOKEN}`;
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const getMovies = async (page: number): Promise<any> => {
 	try {
-		console.log(bearer);
 		const response = await fetch(`${API_URL}/movie/popular?&page=${page}`, {
 			headers: {
 				Authorization: bearer,

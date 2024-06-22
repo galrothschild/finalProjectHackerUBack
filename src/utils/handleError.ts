@@ -1,7 +1,6 @@
-import chalk from "chalk";
 import type { Response } from "express";
 import type { ZodError } from "zod";
-
+import "colors";
 export const handleError = (
 	res: Response,
 	status: number,
@@ -12,7 +11,7 @@ export const handleError = (
 		typeof error === "object" && error !== null && "message" in error
 			? error.message
 			: error;
-	console.log(chalk.redBright(`Error ${errorOccuredAt}: ${message}`));
+	console.log(`Error ${errorOccuredAt}: ${message}`.red);
 	return res.status(status).send(message);
 };
 
@@ -21,6 +20,6 @@ export const handleZodError: (error: ZodError) => Promise<ZodError> = async (
 ) => {
 	const errorMessage = error.errors.map((detail) => detail.message).join(", ");
 	const errorObj = { ...error, message: errorMessage };
-	console.error(chalk.redBright(errorObj.message));
+	console.error(errorObj.message.red);
 	return Promise.reject({ ...errorObj, status: 400 });
 };

@@ -1,11 +1,11 @@
 import supertest from "supertest";
 import app from "../src/main.js";
-
 describe("main", () => {
 	beforeAll(() => {
 		process.env.NODE_ENV = "test";
 	});
 	const request = supertest.agent(app);
+
 	it("should get a list of movies from TMDB", async () => {
 		const res = await request.get("/movies/");
 		expect(res.status).toEqual(200);
