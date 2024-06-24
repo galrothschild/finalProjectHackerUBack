@@ -12,9 +12,9 @@ router.get("/", async (req, res) => {
 		return;
 	}
 	const movies = await getMoviesFromTMDB(pageNumber);
-	if (movies) {
-		res.send(movies);
-	}
+  Promise.all(movies.results.map((movie) => getMovie(movie.id))).then((fullMovies) => {
+    return res.send(fullMovies);
+  });
 });
 
 // get a single movie by id
