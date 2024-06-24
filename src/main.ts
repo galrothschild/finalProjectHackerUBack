@@ -4,9 +4,11 @@ import router from "./router/router.js";
 import "colors";
 import { connectDB } from "./db/db.service.js";
 import { handleError } from "./utils/handleError.js";
+import cors from "cors";
+
 
 const app = express();
-
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
