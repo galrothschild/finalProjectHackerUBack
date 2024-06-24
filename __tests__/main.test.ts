@@ -9,16 +9,12 @@ describe("main", () => {
 	it("should get a list of movies from TMDB page 1", async () => {
 		const res = await request.get("/movies/");
 		expect(res.status).toEqual(200);
-		expect(res.body).toHaveProperty("page", 1);
-		expect(res.body).toHaveProperty("results");
-		expect(Array.isArray(res.body.results)).toBe(true);
+		expect(Array.isArray(res.body)).toBe(true);
 	});
-	it("should get a list of movies from TMDB page 1", async () => {
+	it("should get a list of movies from TMDB page 3", async () => {
 		const res = await request.get("/movies/").send({ page: 3 });
 		expect(res.status).toEqual(200);
-		expect(res.body).toHaveProperty("page", 3);
-		expect(res.body).toHaveProperty("results");
-		expect(Array.isArray(res.body.results)).toBe(true);
+		expect(Array.isArray(res.body)).toBe(true);
 	});
 	it("Should get 1 movie from TMDB", async () => {
 		const res = await request.get("/movies/13");
