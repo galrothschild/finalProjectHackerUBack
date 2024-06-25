@@ -11,8 +11,11 @@ export const getMovie = async (id: string): Promise<IMovie> => {
 		if (!movieFromTMDB) {
 			return null;
 		}
-		const newMovie = new MovieModel(movieFromTMDB);
-		return await newMovie.save();
+    if (!movieFromTMDB.overview) {
+      movieFromTMDB.overview = "No overview available";
+    }
+      const newMovie = new MovieModel(movieFromTMDB);
+      return await newMovie.save();
 	} catch (error) {
 		return Promise.reject(error);
 	}

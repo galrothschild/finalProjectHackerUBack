@@ -12,7 +12,7 @@ export const handleError = (
 			? error.message
 			: error;
 	console.log(`Error ${errorOccuredAt}: ${message}`.red);
-	return res.status(status).send(message);
+	return res.status(status).send({error: message});
 };
 
 export const handleZodError: (error: ZodError) => Promise<ZodError> = async (

@@ -1,5 +1,5 @@
 import "./config";
-import express from "express";
+import express, { NextFunction, Response } from "express";
 import router from "./router/router.js";
 import "colors";
 import { connectDB } from "./db/db.service.js";
@@ -14,9 +14,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
 
-app.use((err, _req, _res, next) => {
-	handleError(_res, 500, err, "handling error");
-	next(err);
+app.use((err: unknown, _req, res:Response, next: NextFunction) => {
+  const statusCode = +res.status || 500;
+	handleError(res, statusCode, err, "handling error");
 });
 
 const port = process.env.PORT || 1234;
