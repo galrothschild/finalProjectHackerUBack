@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
 
-app.use((err: unknown, _req, res:Response, next: NextFunction) => {
+app.use((err: unknown, _req, res:Response, _next: NextFunction) => {
   const statusCode = +res.status || 500;
 	handleError(res, statusCode, err, "handling error");
 });

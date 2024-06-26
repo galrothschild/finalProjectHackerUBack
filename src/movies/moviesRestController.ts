@@ -23,7 +23,7 @@ router.get("/", async (req, res, next) => {
 });
 
 // get a single movie by id
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     if (!req.params.id || Number.isNaN(req.params.id)) {
       return res.status(400).send("Invalid movie id");
@@ -34,7 +34,7 @@ router.get("/:id", async (req, res) => {
     }
     return res.status(404).send("Movie not found");
   } catch (error) {
-    return handleError(res, 500, error, "getting movie");
+    return next(error);
   }
 });
 export default router;
