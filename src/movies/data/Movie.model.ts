@@ -72,23 +72,23 @@ const ProductionCountrySchema = new mongoose.Schema<ProductionCountry>({
 const SpokenLanguageSchema = new mongoose.Schema<SpokenLanguage>({
 	english_name: { type: String, required: true },
 	iso_639_1: { type: String, required: true },
-	name: { type: String, required: true },
+	name: { type: String, required: false },
 });
 
 const MovieSchema = new mongoose.Schema<IMovieDocument>({
 	adult: { type: Boolean, required: true },
-	backdrop_path: { type: String, required: true },
+	backdrop_path: { type: String, required: false },
 	budget: { type: Number, required: true },
 	genres: { type: [GenreSchema], required: true },
 	homepage: { type: String, required: false },
 	id: { type: Number, required: true },
-	imdb_id: { type: String, required: true },
+	imdb_id: { type: String, required: false },
 	origin_country: { type: [String], required: true },
 	original_language: { type: String, required: true },
 	original_title: { type: String, required: true },
 	overview: { type: String, required: true },
 	popularity: { type: Number, required: true },
-	poster_path: { type: String, required: true },
+	poster_path: { type: String, required: false },
 	production_companies: { type: [ProductionCompanySchema], required: true },
 	production_countries: { type: [ProductionCountrySchema], required: true },
 	release_date: { type: String, required: true },

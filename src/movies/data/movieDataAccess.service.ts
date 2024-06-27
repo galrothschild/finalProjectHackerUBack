@@ -1,5 +1,6 @@
 import { getMovieFromTMDB } from "../../tmdb/tmdb.api.service.js";
 import { MovieModel, type IMovie } from "./Movie.model.js";
+import { normalizeMovie } from "./normalizeMovie.js";
 
 export const getMovie = async (id: string): Promise<IMovie> => {
 	try {
@@ -11,10 +12,8 @@ export const getMovie = async (id: string): Promise<IMovie> => {
 		if (!movieFromTMDB) {
 			return null;
 		}
-    if (!movieFromTMDB.overview) {
-      movieFromTMDB.overview = "No overview available";
-    }
-      const newMovie = new MovieModel(movieFromTMDB);
+    const normalizedMovie = normalizeMovie(movieFromTMDB);
+      const newMovie = new MovieModel(normalizedMovie);
       return await newMovie.save();
 	} catch (error) {
 		return Promise.reject(error);
