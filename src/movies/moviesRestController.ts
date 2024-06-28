@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { getMoviesFromTMDB } from "../tmdb/tmdb.api.service.js";
 import { getMovie } from "./data/movieDataAccess.service.js";
-import { handleError } from "../utils/handleError.js";
 
 const router = Router();
 

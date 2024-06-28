@@ -91,7 +91,11 @@ const MovieSchema = new mongoose.Schema<IMovieDocument>({
 	poster_path: { type: String, required: false },
 	production_companies: { type: [ProductionCompanySchema], required: true },
 	production_countries: { type: [ProductionCountrySchema], required: true },
-	release_date: { type: String, required: true },
+	release_date: {
+		type: String,
+		required: false,
+		default: new Date(0).toString(),
+	},
 	revenue: { type: Number, required: true },
 	runtime: { type: Number, required: true },
 	spoken_languages: { type: [SpokenLanguageSchema], required: true },
