@@ -1,10 +1,17 @@
 const API_URL = process.env.TMDB_API_URL || "https://api.themoviedb.org/3";
 
 const bearer = `Bearer ${process.env.API_READ_TOKEN}`;
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export const getMoviesFromTMDB = async (page: number): Promise<any> => {
+export const getMoviesFromTMDB = async (
+	page: number,
+	query?: string,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+): Promise<any> => {
+	const URL = query
+		? `/search/movie?&query=${query}&page=${page}`
+		: `/movie/popular?&page=${page}`;
 	try {
-		const response = await fetch(`${API_URL}/movie/popular?&page=${page}`, {
+		console.log(`${API_URL}${URL}`);
+		const response = await fetch(`${API_URL}${URL}`, {
 			headers: {
 				Authorization: bearer,
 				"Content-Type": "application/json",
