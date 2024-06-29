@@ -10,7 +10,6 @@ export const getMoviesFromTMDB = async (
 		? `/search/movie?&query=${query}&page=${page}`
 		: `/movie/popular?&page=${page}`;
 	try {
-		console.log(`${API_URL}${URL}`);
 		const response = await fetch(`${API_URL}${URL}`, {
 			headers: {
 				Authorization: bearer,

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getMoviesFromTMDB } from "../tmdb/tmdb.api.service.js";
 import { getMovie } from "./data/movieDataAccess.service.js";
+import { IMovie } from "./data/Movie.model.js";
 
 const router = Router();
 
@@ -9,7 +10,6 @@ router.get("/", async (req, res, next) => {
 	try {
 		const pageNumber = req.query.page || 1;
 		const query = req.query.query ? req.query.query.toString() : "";
-		console.log(req.query.page);
 		if (+pageNumber < 1 || Number.isNaN(+pageNumber)) {
 			res.status(400).send("Invalid page number");
 			return;
@@ -17,7 +17,10 @@ router.get("/", async (req, res, next) => {
 		const movies = await getMoviesFromTMDB(+pageNumber, query);
 		Promise.all(movies.results.map((movie) => getMovie(movie.id))).then(
 			(fullMovies) => {
-				return res.send(fullMovies);
+				return res.send({
+					results: fullMovies,
+					total_pages: movies.total_pages,
+				});
 			},
 		);
 	} catch (error) {
