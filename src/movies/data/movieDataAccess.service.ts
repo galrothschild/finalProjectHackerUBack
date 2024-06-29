@@ -12,9 +12,12 @@ export const getMovie = async (id: string): Promise<IMovie> => {
 		if (!movieFromTMDB) {
 			return null;
 		}
-    const normalizedMovie = normalizeMovie(movieFromTMDB);
-      const newMovie = new MovieModel(normalizedMovie);
-      return await newMovie.save();
+		if (movieFromTMDB.status_code === 34) {
+			return null;
+		}
+		const normalizedMovie = normalizeMovie(movieFromTMDB);
+		const newMovie = new MovieModel(normalizedMovie);
+		return await newMovie.save();
 	} catch (error) {
 		return Promise.reject(error);
 	}

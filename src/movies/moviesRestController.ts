@@ -7,13 +7,14 @@ const router = Router();
 // get list of popular movies
 router.get("/", async (req, res, next) => {
 	try {
-		const pageNumber = +req.query.page || 1;
+		const pageNumber = req.query.page || 1;
 		const query = req.query.query ? req.query.query.toString() : "";
-		if (pageNumber < 1 || Number.isNaN(pageNumber)) {
+		console.log(req.query.page);
+		if (+pageNumber < 1 || Number.isNaN(+pageNumber)) {
 			res.status(400).send("Invalid page number");
 			return;
 		}
-		const movies = await getMoviesFromTMDB(pageNumber, query);
+		const movies = await getMoviesFromTMDB(+pageNumber, query);
 		Promise.all(movies.results.map((movie) => getMovie(movie.id))).then(
 			(fullMovies) => {
 				return res.send(fullMovies);
@@ -27,7 +28,7 @@ router.get("/", async (req, res, next) => {
 // get a single movie by id
 router.get("/:id", async (req, res, next) => {
 	try {
-		if (!req.params.id || Number.isNaN(req.params.id)) {
+		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
 			return res.status(400).send("Invalid movie id");
 		}
 		const movie = await getMovie(req.params.id);
