@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getMoviesFromTMDB } from "../tmdb/tmdb.api.service.js";
-import { getMovie } from "./data/movieDataAccess.service.js";
+import { getTVShowsFromTMDB } from "../tmdb/tmdb.api.service.js";
+import { getTVShow } from "./data/TVDataAccess.service.js";
 
 const router = Router();
 
@@ -13,8 +13,8 @@ router.get("/", async (req, res, next) => {
 			res.status(400).send("Invalid page number");
 			return;
 		}
-		const movies = await getMoviesFromTMDB(+pageNumber, query);
-		Promise.all(movies.results.map((movie) => getMovie(movie.id))).then(
+		const movies = await getTVShowsFromTMDB(+pageNumber, query);
+		Promise.all(movies.results.map((movie) => getTVShow(movie.id))).then(
 			(fullMovies) => {
 				return res.send({
 					results: fullMovies,
@@ -33,7 +33,7 @@ router.get("/:id", async (req, res, next) => {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
 			return res.status(400).send("Invalid movie id");
 		}
-		const movie = await getMovie(req.params.id);
+		const movie = await getTVShow(req.params.id);
 		if (movie) {
 			return res.status(200).send(movie);
 		}

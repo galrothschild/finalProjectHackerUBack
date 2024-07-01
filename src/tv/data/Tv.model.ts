@@ -2,19 +2,13 @@ import mongoose from "mongoose";
 import type {
 	Genre,
 	ProductionCompany,
-	ProductionCountry,
-	SpokenLanguage,
 } from "../../movies/data/Movie.model.js";
 export interface ITVShow {
-	adult: boolean;
 	backdrop_path: string;
-	created_by: CreatedBy[];
 	first_air_date: string;
 	genres: Genre[];
-	homepage: string;
 	id: number;
 	in_production: boolean;
-	languages: string[];
 	last_air_date: string;
 	last_episode_to_air: LastEpisodeToAir;
 	name: string;
@@ -23,20 +17,15 @@ export interface ITVShow {
 	number_of_episodes: number;
 	number_of_seasons: number;
 	origin_country: string[];
-	original_language: string;
 	original_name: string;
 	overview: string;
 	popularity: number;
 	poster_path: string;
 	production_companies: ProductionCompany[];
-	production_countries: ProductionCountry[];
 	seasons: Season[];
-	spoken_languages: SpokenLanguage[];
 	status: string;
 	tagline: string;
 	type: string;
-	vote_average: number;
-	vote_count: number;
 }
 
 export interface Episode {
@@ -108,47 +97,79 @@ const ProductionCompanySchema = new mongoose.Schema<ProductionCompany>({
 	origin_country: { type: String, required: false },
 });
 
-const ProductionCountrySchema = new mongoose.Schema<ProductionCountry>({
-	iso_3166_1: { type: String, required: true },
-	name: { type: String, required: true },
-});
-
-const SpokenLanguageSchema = new mongoose.Schema<SpokenLanguage>({
-	english_name: { type: String, required: true },
-	iso_639_1: { type: String, required: true },
-	name: { type: String, required: false },
-});
-
-const MovieSchema = new mongoose.Schema<IMovieDocument>({
-	adult: { type: Boolean, required: true },
-	backdrop_path: { type: String, required: false },
-	budget: { type: Number, required: true },
-	genres: { type: [GenreSchema], required: true },
-	homepage: { type: String, required: false },
+const LastEpisodeToAirSchema = new mongoose.Schema<LastEpisodeToAir>({
 	id: { type: Number, required: true },
-	imdb_id: { type: String, required: false },
-	origin_country: { type: [String], required: true },
-	original_language: { type: String, required: true },
-	original_title: { type: String, required: true },
-	overview: { type: String, required: true },
-	popularity: { type: Number, required: true },
-	poster_path: { type: String, required: false },
-	production_companies: { type: [ProductionCompanySchema], required: true },
-	production_countries: { type: [ProductionCountrySchema], required: true },
-	release_date: {
-		type: String,
-		required: false,
-		default: new Date(0).toString(),
-	},
-	revenue: { type: Number, required: true },
-	runtime: { type: Number, required: true },
-	spoken_languages: { type: [SpokenLanguageSchema], required: true },
-	status: { type: String, required: true },
-	tagline: { type: String, required: false },
-	title: { type: String, required: true },
-	video: { type: Boolean, required: true },
-	vote_average: { type: Number, required: true },
-	vote_count: { type: Number, required: true },
+	name: { type: String, required: true },
+	overview: { type: String },
+	vote_average: { type: Number },
+	vote_count: { type: Number },
+	air_date: { type: String },
+	episode_number: { type: Number },
+	episode_type: { type: String },
+	production_code: { type: String },
+	runtime: { type: Number },
+	season_number: { type: Number },
+	show_id: { type: Number },
+	still_path: { type: String, required: false },
 });
 
-export const MovieModel = mongoose.model<IMovieDocument>("Movie", MovieSchema);
+const NetworkSchema = new mongoose.Schema<Network>({
+	id: { type: Number, required: true },
+	logo_path: { type: String },
+	name: { type: String, required: true },
+	origin_country: { type: String },
+});
+
+const SeasonSchema = new mongoose.Schema<Season>({
+	air_date: { type: String, required: false },
+	episode_count: { type: Number, required: true },
+	id: { type: Number, required: true },
+	name: { type: String, required: true },
+	overview: { type: String },
+	poster_path: { type: String, required: false },
+	season_number: { type: Number },
+	vote_average: { type: Number },
+});
+
+const EpisodeSchema = new mongoose.Schema<Episode>({
+	id: { type: Number, required: true },
+	name: { type: String, required: true },
+	overview: { type: String },
+	vote_average: { type: Number },
+	vote_count: { type: Number },
+	air_date: { type: String },
+	episode_number: { type: Number },
+	episode_type: { type: String },
+	production_code: { type: String },
+	season_number: { type: Number },
+	show_id: { type: Number },
+});
+
+export const EpisodeModel = mongoose.model<Episode>("Episode", EpisodeSchema);
+
+const TVShowSchema = new mongoose.Schema<ITVShow>({
+	name: { type: String, required: true },
+	backdrop_path: { type: String, required: false },
+	first_air_date: { type: String, required: true },
+	genres: { type: [GenreSchema], required: true },
+	id: { type: Number, required: true },
+	in_production: { type: Boolean, required: true },
+	last_air_date: { type: String },
+	last_episode_to_air: { type: LastEpisodeToAirSchema },
+	next_episode_to_air: { type: EpisodeSchema },
+	networks: { type: [NetworkSchema] },
+	number_of_episodes: { type: Number },
+	number_of_seasons: { type: Number },
+	origin_country: { type: [String] },
+	original_name: { type: String },
+	overview: { type: String, required: false },
+	popularity: { type: Number },
+	poster_path: { type: String },
+	production_companies: { type: [ProductionCompanySchema] },
+	seasons: { type: [SeasonSchema], required: true },
+	status: { type: String },
+	tagline: { type: String },
+	type: { type: String },
+});
+
+export const TVShowModel = mongoose.model<ITVShow>("TVShow", TVShowSchema);
