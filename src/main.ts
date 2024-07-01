@@ -2,20 +2,19 @@ import "./config";
 import express, { NextFunction, Response } from "express";
 import router from "./router/router.js";
 import "colors";
-import { connectDB } from "./db/db.service.js";
+import { closeDB, connectDB } from "./db/db.service.js";
 import { handleError } from "./utils/handleError.js";
 import cors from "cors";
 
-
 const app = express();
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(router);
 
-app.use((err: unknown, _req, res:Response, _next: NextFunction) => {
-  const statusCode = +res.status || 500;
+app.use((err: unknown, _req, res: Response, _next: NextFunction) => {
+	const statusCode = +res.status || 500;
 	handleError(res, statusCode, err, "handling error");
 });
 

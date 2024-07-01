@@ -10,8 +10,7 @@ router.get("/", async (req, res, next) => {
 		const pageNumber = req.query.page || 1;
 		const query = req.query.query ? req.query.query.toString() : "";
 		if (+pageNumber < 1 || Number.isNaN(+pageNumber)) {
-			res.status(400).send("Invalid page number");
-			return;
+			return res.status(400).send("Invalid page number");
 		}
 		const movies = await getMoviesFromTMDB(+pageNumber, query);
 		Promise.all(movies.results.map((movie) => getMovie(movie.id))).then(
