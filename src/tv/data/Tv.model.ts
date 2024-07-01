@@ -150,10 +150,10 @@ export const EpisodeModel = mongoose.model<Episode>("Episode", EpisodeSchema);
 const TVShowSchema = new mongoose.Schema<ITVShow>({
 	name: { type: String, required: true },
 	backdrop_path: { type: String, required: false },
-	first_air_date: { type: String, required: true },
-	genres: { type: [GenreSchema], required: true },
+	first_air_date: { type: String },
+	genres: { type: [GenreSchema] },
 	id: { type: Number, required: true },
-	in_production: { type: Boolean, required: true },
+	in_production: { type: Boolean },
 	last_air_date: { type: String },
 	last_episode_to_air: { type: LastEpisodeToAirSchema },
 	next_episode_to_air: { type: EpisodeSchema },
