@@ -1,5 +1,3 @@
-import e from "express";
-
 const API_URL = process.env.TMDB_API_URL || "https://api.themoviedb.org/3";
 
 const bearer = `Bearer ${process.env.API_READ_TOKEN}`;
