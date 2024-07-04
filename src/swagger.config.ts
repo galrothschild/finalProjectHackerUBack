@@ -13,7 +13,10 @@ export const options: swaggerJSDoc.Options = {
 		servers: [{ url: "http://localhost:3000/" }],
 	},
 
-	apis: ["./movies/moviesRestController.js"], //you can change you swagger path
+	apis: [
+		"./src/movies/moviesRestController.ts",
+		"./src/tv/TvRestController.ts",
+	], //you can change you swagger path
 };
 const swaggerSpec = swaggerJSDoc(options);
 

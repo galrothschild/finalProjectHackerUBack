@@ -4,15 +4,23 @@ import { getMovie } from "./data/movieDataAccess.service.js";
 
 const router = Router();
 
-// get list of popular movies
 /**
  * @openapi
- * /:
+ * /movies:
  *   get:
- *     description: Welcome to swagger-jsdoc!
+ *     description: Will get a list of movies
+ *     parameters:
+ *      - name: page
+ *        in: query
+ *        description: optional page number, if it doesn't exist it will default to 1
+ *        schema:
+ *          type: number
  *     responses:
- *       200:
- *         description: Returns a mysterious string.
+ *        200:
+ *          description: Returns a list of movies.
+ *        400:
+ *          description: Invalid Page number
+ *
  */
 router.get("/", async (req, res, next) => {
 	try {
