@@ -43,7 +43,26 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
-// get a single movie by id
+/**
+ * @openapi
+ * /movies/{id}:
+ *   get:
+ *     description: Will get a movie by ID
+ *     parameters:
+ *      - name: id
+ *        in: path
+ *        description: id
+ *        schema:
+ *          type: number
+ *     responses:
+ *        200:
+ *          description: Returns details about a movie.
+ *        400:
+ *          description: Invalid movie ID
+ *        404:
+ *          description: Movie not found
+ *
+ */
 router.get("/:id", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {

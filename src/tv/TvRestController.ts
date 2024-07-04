@@ -4,7 +4,24 @@ import { getTVShow } from "./data/TVDataAccess.service.js";
 
 const router = Router();
 
-// get list of popular movies
+/**
+ * @openapi
+ * /tv:
+ *   get:
+ *     description: Will get a list of tv shows
+ *     parameters:
+ *      - name: page
+ *        in: query
+ *        description: optional page number, if it doesn't exist it will default to 1
+ *        schema:
+ *          type: number
+ *     responses:
+ *        200:
+ *          description: Returns a list of tv shows.
+ *        400:
+ *          description: Invalid Page number
+ *
+ */
 router.get("/", async (req, res, next) => {
 	try {
 		const pageNumber = req.query.page || 1;
@@ -13,12 +30,12 @@ router.get("/", async (req, res, next) => {
 			res.status(400).send("Invalid page number");
 			return;
 		}
-		const movies = await getTVShowsFromTMDB(+pageNumber, query);
-		Promise.all(movies.results.map((movie) => getTVShow(movie.id))).then(
-			(fullMovies) => {
+		const shows = await getTVShowsFromTMDB(+pageNumber, query);
+		Promise.all(shows.results.map((show) => getTVShow(show.id))).then(
+			(fullShows) => {
 				return res.send({
-					results: fullMovies,
-					total_pages: movies.total_pages,
+					results: fullShows,
+					total_pages: shows.total_pages,
 				});
 			},
 		);
@@ -27,17 +44,36 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
-// get a single movie by id
+/**
+ * @openapi
+ * /tv/{id}:
+ *   get:
+ *     description: Will get a tv show by ID
+ *     parameters:
+ *      - name: id
+ *        in: path
+ *        description: id
+ *        schema:
+ *          type: number
+ *     responses:
+ *        200:
+ *          description: Returns details about a tv show.
+ *        400:
+ *          description: Invalid tv show ID
+ *        404:
+ *          description: Tv show not found
+ *
+ */
 router.get("/:id", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
-			return res.status(400).send("Invalid movie id");
+			return res.status(400).send("Invalid show id");
 		}
-		const movie = await getTVShow(req.params.id);
-		if (movie) {
-			return res.status(200).send(movie);
+		const show = await getTVShow(req.params.id);
+		if (show) {
+			return res.status(200).send(show);
 		}
-		return res.status(404).send("Movie not found");
+		return res.status(404).send("Show not found");
 	} catch (error) {
 		return next(error);
 	}
