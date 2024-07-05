@@ -52,6 +52,7 @@ router.get("/", async (req, res, next) => {
  *      - name: id
  *        in: path
  *        description: id
+ *        required: true
  *        schema:
  *          type: number
  *     responses:
