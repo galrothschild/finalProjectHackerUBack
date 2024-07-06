@@ -2,9 +2,11 @@ import { Router } from "express";
 import {
 	getFilteredFromTMDB,
 	getFromTMDB,
+	getGenresFromTMDB,
 	getTVShowsFromTMDB,
 } from "../tmdb/tmdb.api.service.js";
 import { getTVShow } from "./data/TVDataAccess.service.js";
+import { handleError } from "../utils/handleError.js";
 
 const router = Router();
 
@@ -80,7 +82,7 @@ router.get("/", async (req, res, next) => {
 router.get("/filter", async (req, res, next) => {
 	try {
 		const filter = req.query.genres.toString();
-		const pageNumber = req.query.page || 1;
+		const pageNumber = req.query.page === "undefined" ? 1 : req.query.page || 1;
 		if (!filter || /^[0-9,]+$/.test(filter) === false) {
 			return res.status(400).send("Invalid filter");
 		}
@@ -96,6 +98,27 @@ router.get("/filter", async (req, res, next) => {
 				});
 			},
 		);
+	} catch (error) {
+		return next(error);
+	}
+});
+
+/**
+ * @openapi
+ * /movies/genres:
+ *   get:
+ *     description: Will get a list of movie genres
+ *     responses:
+ *        200:
+ *          description: Returns a list of genres.
+ *
+ *
+ */
+
+router.get("/genres", async (_req, res, next) => {
+	try {
+		const genres = await getGenresFromTMDB("tv");
+		return res.send(genres.genres);
 	} catch (error) {
 		return next(error);
 	}

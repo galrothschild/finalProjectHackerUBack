@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getFilteredFromTMDB, getFromTMDB } from "../tmdb/tmdb.api.service.js";
+import {
+	getFilteredFromTMDB,
+	getFromTMDB,
+	getGenresFromTMDB,
+} from "../tmdb/tmdb.api.service.js";
 import { getMovie } from "./data/movieDataAccess.service.js";
 
 const router = Router();
@@ -42,6 +46,7 @@ router.get("/", async (req, res, next) => {
 		return next(error);
 	}
 });
+
 /**
  * @openapi
  * /movies/filter:
@@ -75,7 +80,7 @@ router.get("/filter", async (req, res, next) => {
 	try {
 		const filter = req.query.genres.toString();
 		const pageNumber = req.query.page || 1;
-		if (!filter || /^[0-9,]+$/.test(filter) === false) {
+		if (!filter || /^[0-9]+(?:,[0-9]+)*$/.test(filter) === false) {
 			return res.status(400).send("Invalid filter");
 		}
 		if (+pageNumber < 1 || Number.isNaN(+pageNumber)) {
@@ -94,6 +99,27 @@ router.get("/filter", async (req, res, next) => {
 		return next(error);
 	}
 });
+/**
+ * @openapi
+ * /movies/genres:
+ *   get:
+ *     description: Will get a list of movie genres
+ *     responses:
+ *        200:
+ *          description: Returns a list of genres.
+ *
+ *
+ */
+
+router.get("/genres", async (_req, res, next) => {
+	try {
+		const genres = await getGenresFromTMDB("movie");
+		return res.send(genres.genres);
+	} catch (error) {
+		return next(error);
+	}
+});
+
 /**
  * @openapi
  * /movies/{id}:

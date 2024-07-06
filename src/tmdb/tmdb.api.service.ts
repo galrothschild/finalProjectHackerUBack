@@ -24,6 +24,24 @@ export const getFromTMDB = async (
 		return null;
 	}
 };
+export const getGenresFromTMDB = async (
+	api: "movie" | "tv",
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+): Promise<any> => {
+	try {
+		const response = await fetch(`${API_URL}/genre/${api}/list`, {
+			headers: {
+				Authorization: bearer,
+				"Content-Type": "application/json",
+			},
+		});
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
 export const getFilteredFromTMDB = async (
 	Genres: string,
 	api: "movie" | "tv",
