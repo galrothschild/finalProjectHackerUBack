@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getTVShowsFromTMDB } from "../tmdb/tmdb.api.service.js";
+import {
+	getFilteredFromTMDB,
+	getFromTMDB,
+	getTVShowsFromTMDB,
+} from "../tmdb/tmdb.api.service.js";
 import { getTVShow } from "./data/TVDataAccess.service.js";
 
 const router = Router();
@@ -30,7 +34,60 @@ router.get("/", async (req, res, next) => {
 			res.status(400).send("Invalid page number");
 			return;
 		}
-		const shows = await getTVShowsFromTMDB(+pageNumber, query);
+		const shows = await getFromTMDB(+pageNumber, "tv", query);
+		Promise.all(shows.results.map((show) => getTVShow(show.id))).then(
+			(fullShows) => {
+				return res.send({
+					results: fullShows,
+					total_pages: shows.total_pages,
+				});
+			},
+		);
+	} catch (error) {
+		return next(error);
+	}
+});
+
+/**
+ * @openapi
+ * /shows/filter:
+ *   get:
+ *     description: Will get a list of shows by genre
+ *     parameters:
+ *      - name: genres
+ *        in: query
+ *        description: genres
+ *        required: true
+ *        schema:
+ *         type: string
+ *         pattern: '^[0-9]+(?:,[0-9]+)*$'
+ *         example: 28,12
+ *      - name: page
+ *        in: query
+ *        description: optional page number, if it doesn't exist it will default to 1
+ *        schema:
+ *         type: number
+ *         example: 1
+ *         required: false
+ *     responses:
+ *        200:
+ *          description: Returns a list of shows.
+ *        400:
+ *          description: Invalid filter
+ *
+ */
+
+router.get("/filter", async (req, res, next) => {
+	try {
+		const filter = req.query.genres.toString();
+		const pageNumber = req.query.page || 1;
+		if (!filter || /^[0-9,]+$/.test(filter) === false) {
+			return res.status(400).send("Invalid filter");
+		}
+		if (+pageNumber < 1 || Number.isNaN(+pageNumber)) {
+			return res.status(400).send("Invalid page number");
+		}
+		const shows = await getFilteredFromTMDB(filter, "tv", +pageNumber);
 		Promise.all(shows.results.map((show) => getTVShow(show.id))).then(
 			(fullShows) => {
 				return res.send({
