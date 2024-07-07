@@ -1,24 +1,161 @@
-import { Router } from "express";
+import { Router, type Request, type Response } from "express";
 import {
 	createUser,
 	deleteUser,
+	doesUserExist,
 	getAllUsers,
 	getUser,
+	loginUser,
 	updateUser,
 } from "../data/usersDataAccess.service.js";
 import { handleError } from "../../utils/handleError.js";
 import { normalizeUser } from "../utils/normalizeUser.js";
+import type { loginUserType } from "../data/User.model.js";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /users/:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       example: '{"name": {"first": "John", "middle": "", "last": "Doe"}, "age": 30, "email": "John@email.com", "password": "Password123", "image": "https://via.placeholder.com/150", "username": "JohnDoe"}'
+ *       content:
+ *         application/json:
+ *           schema:
+ *            type: object
+ *            properties:
+ *             username:
+ *              type: string
+ *              required: true
+ *             name:
+ *               type: string
+ *               required: true
+ *             age:
+ *               required: true
+ *               type: number
+ *             email:
+ *              required: true
+ *              type: string
+ *              pattern: ^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$
+ *             password:
+ *              required: true
+ *              type: string
+ *              pattern: ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$
+ *
+ *     responses:
+ *       '201':
+ *         description: Created
+ *         content:
+ *           application/json:
+ *            schema:
+ *             type: object
+ *             properties:
+ *              name:
+ *               type: object
+ *               properties:
+ *                first: string
+ *                last: string
+ *                middle: string
+ *       '500':
+ *         description: Internal Server Error
+ *
+ */
 router.post("/", async (req, res) => {
 	try {
 		const user = req.body;
 		const normalizedUser = normalizeUser(user);
 		const createdUser = await createUser(normalizedUser);
-		return res.status(201).json(createdUser);
+		return res.status(201).send(createdUser);
 	} catch (error) {
 		return handleError(res, 500, error, "Error creating user");
+	}
+});
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Login user
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 required: true
+ *               password:
+ *                 type: string
+ *                 required: true
+ *     responses:
+ *       '200':
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       '400':
+ *         description: Bad Request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       '403':
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       '500':
+ *         description: Internal Server Error
+ */
+
+router.post("/login", async (req: Request, res: Response) => {
+	try {
+		const user: loginUserType = req.body;
+		const userExistsEmail = await doesUserExist(user.username, "email");
+		const userExistsUsername = await doesUserExist(user.username, "username");
+		if (!userExistsUsername && !userExistsEmail) {
+			return handleError(
+				res,
+				400,
+				"Invalid Username or Password",
+				"logging in user",
+			);
+		}
+		const key = userExistsEmail ? "email" : "username";
+
+		const token = await loginUser(user, key);
+		return res.status(200).send(token);
+	} catch (error: unknown) {
+		if (error === "Invalid Email or Password") {
+			return res.status(400).send(error);
+		}
+		if (
+			error ===
+			"User locked after 3 attempts, please try again after 15 minutes"
+		) {
+			return res.status(403).send(error);
+		}
+		return handleError(res, 500, error, "logging in user");
 	}
 });
 

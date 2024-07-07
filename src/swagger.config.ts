@@ -14,9 +14,10 @@ export const options: swaggerJSDoc.Options = {
 	},
 
 	apis: [
-		"./src/movies/moviesRestController.ts",
-		"./src/tv/TvRestController.ts",
-	], //you can change you swagger path
+		"./src/movies/routes/moviesRestController.ts",
+		"./src/tv/routes/TvRestController.ts",
+		"./src/users/routes/usersRestController.ts",
+	],
 };
 const swaggerSpec = swaggerJSDoc(options);
 

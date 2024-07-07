@@ -3,16 +3,18 @@ import {
 	getFilteredFromTMDB,
 	getFromTMDB,
 	getGenresFromTMDB,
-} from "../tmdb/tmdb.api.service.js";
-import { getMovie } from "./data/movieDataAccess.service.js";
+	getTVShowsFromTMDB,
+} from "../../tmdb/tmdb.api.service.js";
+import { getTVShow } from "../data/TVDataAccess.service.js";
+import { handleError } from "../../utils/handleError.js";
 
 const router = Router();
 
 /**
  * @openapi
- * /movies:
+ * /tv:
  *   get:
- *     description: Will get a list of movies
+ *     description: Will get a list of tv shows
  *     parameters:
  *      - name: page
  *        in: query
@@ -21,7 +23,7 @@ const router = Router();
  *          type: number
  *     responses:
  *        200:
- *          description: Returns a list of movies.
+ *          description: Returns a list of tv shows.
  *        400:
  *          description: Invalid Page number
  *
@@ -31,14 +33,15 @@ router.get("/", async (req, res, next) => {
 		const pageNumber = req.query.page || 1;
 		const query = req.query.query ? req.query.query.toString() : "";
 		if (+pageNumber < 1 || Number.isNaN(+pageNumber)) {
-			return res.status(400).send("Invalid page number");
+			res.status(400).send("Invalid page number");
+			return;
 		}
-		const movies = await getFromTMDB(+pageNumber, "movie", query);
-		Promise.all(movies.results.map((movie) => getMovie(movie.id))).then(
-			(fullMovies) => {
+		const shows = await getFromTMDB(+pageNumber, "tv", query);
+		Promise.all(shows.results.map((show) => getTVShow(show.id))).then(
+			(fullShows) => {
 				return res.send({
-					results: fullMovies,
-					total_pages: movies.total_pages,
+					results: fullShows,
+					total_pages: shows.total_pages,
 				});
 			},
 		);
@@ -49,9 +52,9 @@ router.get("/", async (req, res, next) => {
 
 /**
  * @openapi
- * /movies/filter:
+ * /shows/filter:
  *   get:
- *     description: Will get a list of movies by genre
+ *     description: Will get a list of shows by genre
  *     parameters:
  *      - name: genres
  *        in: query
@@ -70,7 +73,7 @@ router.get("/", async (req, res, next) => {
  *         required: false
  *     responses:
  *        200:
- *          description: Returns a list of movies.
+ *          description: Returns a list of shows.
  *        400:
  *          description: Invalid filter
  *
@@ -79,19 +82,19 @@ router.get("/", async (req, res, next) => {
 router.get("/filter", async (req, res, next) => {
 	try {
 		const filter = req.query.genres.toString();
-		const pageNumber = req.query.page || 1;
-		if (!filter || /^[0-9]+(?:,[0-9]+)*$/.test(filter) === false) {
+		const pageNumber = req.query.page === "undefined" ? 1 : req.query.page || 1;
+		if (!filter || /^[0-9,]+$/.test(filter) === false) {
 			return res.status(400).send("Invalid filter");
 		}
 		if (+pageNumber < 1 || Number.isNaN(+pageNumber)) {
 			return res.status(400).send("Invalid page number");
 		}
-		const movies = await getFilteredFromTMDB(filter, "movie", +pageNumber);
-		Promise.all(movies.results.map((movie) => getMovie(movie.id))).then(
-			(fullMovies) => {
+		const shows = await getFilteredFromTMDB(filter, "tv", +pageNumber);
+		Promise.all(shows.results.map((show) => getTVShow(show.id))).then(
+			(fullShows) => {
 				return res.send({
-					results: fullMovies,
-					total_pages: movies.total_pages,
+					results: fullShows,
+					total_pages: shows.total_pages,
 				});
 			},
 		);
@@ -99,6 +102,7 @@ router.get("/filter", async (req, res, next) => {
 		return next(error);
 	}
 });
+
 /**
  * @openapi
  * /movies/genres:
@@ -113,7 +117,7 @@ router.get("/filter", async (req, res, next) => {
 
 router.get("/genres", async (_req, res, next) => {
 	try {
-		const genres = await getGenresFromTMDB("movie");
+		const genres = await getGenresFromTMDB("tv");
 		return res.send(genres.genres);
 	} catch (error) {
 		return next(error);
@@ -122,38 +126,36 @@ router.get("/genres", async (_req, res, next) => {
 
 /**
  * @openapi
- * /movies/{id}:
+ * /tv/{id}:
  *   get:
- *     description: Will get a movie by ID
+ *     description: Will get a tv show by ID
  *     parameters:
  *      - name: id
  *        in: path
  *        description: id
- *        required: true
  *        schema:
  *          type: number
- *        responses:
+ *     responses:
  *        200:
- *          description: Returns details about a movie.
+ *          description: Returns details about a tv show.
  *        400:
- *          description: Invalid movie ID
+ *          description: Invalid tv show ID
  *        404:
- *          description: Movie not found
+ *          description: Tv show not found
  *
  */
 router.get("/:id", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
-			return res.status(400).send("Invalid movie id");
+			return res.status(400).send("Invalid show id");
 		}
-		const movie = await getMovie(req.params.id);
-		if (movie) {
-			return res.status(200).send(movie);
+		const show = await getTVShow(req.params.id);
+		if (show) {
+			return res.status(200).send(show);
 		}
-		return res.status(404).send("Movie not found");
+		return res.status(404).send("Show not found");
 	} catch (error) {
 		return next(error);
 	}
 });
-
 export default router;
