@@ -7,6 +7,7 @@ import {
 } from "../../tmdb/tmdb.api.service.js";
 import { getTVShow } from "../data/TVDataAccess.service.js";
 import { handleError } from "../../utils/handleError.js";
+import { auth } from "../../auth/auth.service.js";
 
 const router = Router();
 
@@ -157,5 +158,9 @@ router.get("/:id", async (req, res, next) => {
 	} catch (error) {
 		return next(error);
 	}
+});
+
+router.patch("/:id/watched", auth, async (req, res, next) => {
+	// req.user.watched.push({req.params.id);
 });
 export default router;

@@ -12,6 +12,12 @@ export type IUser = {
 		middle?: string;
 	};
 	isAdmin: boolean;
+	watchList: watchListEntry[];
+	watched: watchListEntry[];
+};
+type watchListEntry = {
+	type: "tv show" | "movie";
+	id: mongoose.Types.ObjectId;
 };
 export type IUserDocument = IUser & mongoose.Document;
 
@@ -19,6 +25,10 @@ export type loginUserType = {
 	username: string;
 	password: string;
 };
+const watchListEntrySchema = new mongoose.Schema({
+	type: String,
+	id: mongoose.Types.ObjectId,
+});
 
 const UserSchema = new mongoose.Schema<IUserDocument>({
 	username: { type: String, required: true },
@@ -36,6 +46,8 @@ const UserSchema = new mongoose.Schema<IUserDocument>({
 		middle: { type: String },
 	},
 	isAdmin: { type: Boolean, default: false },
+	watched: { type: [watchListEntrySchema], default: [] },
+	watchList: { type: [watchListEntrySchema], default: [] },
 });
 
 const pepper = process.env.PEPPER || "pepper";
