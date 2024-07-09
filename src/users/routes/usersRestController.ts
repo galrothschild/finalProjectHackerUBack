@@ -11,6 +11,7 @@ import {
 import { handleError } from "../../utils/handleError.js";
 import { normalizeUser } from "../utils/normalizeUser.js";
 import type { loginUserType } from "../data/User.model.js";
+import { verifyRefreshToken } from "../../auth/Providers/jwt.js";
 
 const router = Router();
 
@@ -204,6 +205,19 @@ router.put("/:id", async (req, res) => {
 		return res.status(200).send(updatedUser);
 	} catch (error) {
 		return handleError(res, 500, error, "Error updating user");
+	}
+});
+
+router.post("/refresh-token", async (req, res) => {
+	try {
+		const refreshToken = req.cookies.refreshToken;
+		if (!refreshToken) return res.status(401).send("No refresh token provided");
+		const decoded = verifyRefreshToken(refreshToken) as { _id: string };
+		if (!decoded) return res.status(403).send("Invalid refresh token");
+		const user = await getUser(decoded._id);
+		console.log(user);
+	} catch (error) {
+		return handleError(res, 500, error, "Error refreshing token");
 	}
 });
 
