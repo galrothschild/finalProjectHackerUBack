@@ -1,5 +1,5 @@
 import { generateToken } from "../../auth/Providers/jwt.js";
-import { IUserDocument, UserModel, type IUser } from "./User.model.js";
+import { type IUserDocument, UserModel, type IUser } from "./User.model.js";
 import bcrypt from "bcrypt";
 
 // create user in the database
