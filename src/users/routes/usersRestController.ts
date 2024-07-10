@@ -11,7 +11,10 @@ import {
 import { handleError } from "../../utils/handleError.js";
 import { normalizeUser } from "../utils/normalizeUser.js";
 import type { loginUserType } from "../data/User.model.js";
-import { verifyRefreshToken } from "../../auth/Providers/jwt.js";
+import {
+	generateRefreshToken,
+	verifyRefreshToken,
+} from "../../auth/Providers/jwt.js";
 
 const router = Router();
 
@@ -144,7 +147,12 @@ router.post("/login", async (req: Request, res: Response) => {
 		}
 		const key = userExistsEmail ? "email" : "username";
 
-		const token = await loginUser(user, key);
+		const { token, refreshToken } = await loginUser(user, key);
+		res.cookie("refreshToken", refreshToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: "none",
+		});
 		return res.status(200).send(token);
 	} catch (error: unknown) {
 		if (error === "Invalid Email or Password") {

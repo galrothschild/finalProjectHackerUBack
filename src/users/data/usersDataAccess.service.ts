@@ -1,4 +1,7 @@
-import { generateToken } from "../../auth/Providers/jwt.js";
+import {
+	generateRefreshToken,
+	generateToken,
+} from "../../auth/Providers/jwt.js";
 import { type IUserDocument, UserModel, type IUser } from "./User.model.js";
 import bcrypt from "bcrypt";
 
@@ -54,7 +57,7 @@ export const loginUser: (
 		password: string;
 	},
 	key: "username" | "email",
-) => Promise<string> = async (user, key) => {
+) => Promise<Record<string, string>> = async (user, key) => {
 	const { username, password } = user;
 	try {
 		const userFromDB = (await UserModel.findOne({
@@ -67,11 +70,12 @@ export const loginUser: (
 		);
 		if (isValidPassword) {
 			const token = generateToken(userFromDB);
+			const refreshToken = generateRefreshToken(userFromDB);
 			await UserModel.findByIdAndUpdate(id, {
 				failCount: 0,
 				lockedUntil: undefined,
 			});
-			return Promise.resolve(token);
+			return Promise.resolve({ token, refreshToken });
 		}
 		if (userFromDB.isAdmin) {
 			return Promise.reject("Invalid Email or Password");
