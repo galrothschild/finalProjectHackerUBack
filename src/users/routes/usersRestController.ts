@@ -11,10 +11,7 @@ import {
 import { handleError } from "../../utils/handleError.js";
 import { normalizeUser } from "../utils/normalizeUser.js";
 import type { loginUserType } from "../data/User.model.js";
-import {
-	generateRefreshToken,
-	verifyRefreshToken,
-} from "../../auth/Providers/jwt.js";
+import { generateToken, verifyRefreshToken } from "../../auth/Providers/jwt.js";
 
 const router = Router();
 
@@ -223,7 +220,8 @@ router.post("/refresh-token", async (req, res) => {
 		const decoded = verifyRefreshToken(refreshToken) as { _id: string };
 		if (!decoded) return res.status(403).send("Invalid refresh token");
 		const user = await getUser(decoded._id);
-		console.log(user);
+		const token = generateToken(user);
+		return res.status(200).send(token);
 	} catch (error) {
 		return handleError(res, 500, error, "Error refreshing token");
 	}
