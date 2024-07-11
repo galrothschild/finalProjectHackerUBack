@@ -31,7 +31,7 @@ const watchListEntrySchema = new mongoose.Schema({
 });
 
 const UserSchema = new mongoose.Schema<IUserDocument>({
-	username: { type: String, required: true },
+	username: { type: String, required: true, unique: true },
 	email: { type: String, required: true, unique: true, match: /.+@.+\..+/ },
 	password: { type: String, required: true, minlength: 6 },
 	image: {
