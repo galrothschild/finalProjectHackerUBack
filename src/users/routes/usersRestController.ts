@@ -69,6 +69,13 @@ const router = Router();
 router.post("/", async (req, res) => {
 	try {
 		const user = req.body;
+		const userExistsEmail = await doesUserExist(user.email, "email");
+		const userExistsUsername = await doesUserExist(user.username, "username");
+		if (userExistsEmail || userExistsUsername) {
+			return res
+				.status(400)
+				.send("User already exists with this email or username");
+		}
 		const normalizedUser = normalizeUser(user);
 		const createdUser = await createUser(normalizedUser);
 		return res.status(201).send(createdUser);
