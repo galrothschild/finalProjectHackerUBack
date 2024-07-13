@@ -4,7 +4,7 @@ import {
 	getFromTMDB,
 	getGenresFromTMDB,
 } from "../../tmdb/tmdb.api.service.js";
-import { getTVShow } from "../data/TVDataAccess.service.js";
+import { getTVShow, patchUsersTVShows } from "../data/TVDataAccess.service.js";
 import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
 import {
 	getUser,
@@ -177,16 +177,10 @@ router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
 		if (!user) {
 			return res.status(401).send("User not found");
 		}
-		if (!user.watchList.includes({ id: showId, type: "tv show" })) {
-			user.watchList.push({ id: showId, type: "tv show" });
-		} else {
-			user.watchList = user.watchList.splice(
-				user.watchList.indexOf({ id: showId, type: "tv show" }),
-				1,
-			);
-		}
-		await updateUser(userId, user);
-		return res.status(200).send(show);
+		const watched = await patchUsersTVShows(user, showId, false);
+		return res
+			.status(200)
+			.send(watched ? "Added to watchList" : "Removed from watchList");
 	} catch (error) {
 		return next(error);
 	}
@@ -210,16 +204,14 @@ router.patch(
 			if (!user) {
 				return res.status(401).send("User not found");
 			}
-			if (!user.watched.includes({ id: showId, type: "tv show" })) {
-				user.watched.push({ id: showId, type: "tv show" });
-			} else {
-				user.watched = user.watched.splice(
-					user.watched.indexOf({ id: showId, type: "tv show" }),
-					1,
+			const watched = await patchUsersTVShows(user, showId, true);
+			return res
+				.status(200)
+				.send(
+					watched
+						? "Added to watched TV Shows"
+						: "Removed from watched TV Shows",
 				);
-			}
-			await updateUser(userId, user);
-			return res.status(200).send(show);
 		} catch (error) {
 			return next(error);
 		}

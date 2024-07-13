@@ -27,7 +27,7 @@ export type loginUserType = {
 };
 const watchListEntrySchema = new mongoose.Schema({
 	type: String,
-	id: mongoose.Types.ObjectId,
+	id: String,
 });
 
 const UserSchema = new mongoose.Schema<IUserDocument>({

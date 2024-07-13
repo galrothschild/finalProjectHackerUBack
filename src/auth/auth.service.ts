@@ -15,10 +15,11 @@ export const auth = (
 	next: NextFunction,
 ) => {
 	if (tokenGenerator === "jwt") {
-		const token = req.header("x-auth-token");
-		if (!token) {
+		const accessToken = req.header("Authorization");
+		if (!accessToken) {
 			return handleError(res, 401, "Access Denied", "Authenticating User");
 		}
+		const token = accessToken.split(" ")[1];
 		try {
 			const decoded = jwt.verify(token, key) as JwtPayload;
 			if (decoded.exp * 1000 < Date.now()) {

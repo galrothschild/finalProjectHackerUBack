@@ -4,7 +4,7 @@ import {
 	getFromTMDB,
 	getGenresFromTMDB,
 } from "../../tmdb/tmdb.api.service.js";
-import { getMovie } from "../data/movieDataAccess.service.js";
+import { getMovie, patchUsersMovies } from "../data/movieDataAccess.service.js";
 import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
 import {
 	getUser,
@@ -164,6 +164,9 @@ router.get("/:id", async (req, res, next) => {
 router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
 	const userId = req.user?._id;
 	const movieId = req.params.id;
+	if (Number.isNaN(+movieId) || +movieId < 1) {
+		return res.status(400).send("Invalid movie id");
+	}
 	try {
 		const show = await getMovie(movieId);
 		if (!show) {
@@ -176,17 +179,8 @@ router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
 		if (!user) {
 			return res.status(401).send("User not found");
 		}
-		let watchListed = false;
-		if (!user.watchList.includes({ id: movieId, type: "movie" })) {
-			user.watchList.push({ id: movieId, type: "movie" });
-			watchListed = true;
-		} else {
-			user.watchList = user.watchList.splice(
-				user.watchList.indexOf({ id: movieId, type: "movie" }),
-				1,
-			);
-		}
-		await updateUser(userId, user);
+		const watchListed = await patchUsersMovies(user, movieId, false);
+
 		return res
 			.status(200)
 			.send(watchListed ? "Added to watchlist" : "Removed from watchlist");
@@ -213,17 +207,7 @@ router.patch(
 			if (!user) {
 				return res.status(401).send("User not found");
 			}
-			let watched = false;
-			if (!user.watched.includes({ id: movieId, type: "movie" })) {
-				user.watched.push({ id: movieId, type: "movie" });
-				watched = true;
-			} else {
-				user.watched = user.watched.splice(
-					user.watched.indexOf({ id: movieId, type: "movie" }),
-					1,
-				);
-			}
-			await updateUser(userId, user);
+			const watched = await patchUsersMovies(user, movieId, true);
 			return res
 				.status(200)
 				.send(
