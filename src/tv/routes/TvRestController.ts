@@ -3,11 +3,13 @@ import {
 	getFilteredFromTMDB,
 	getFromTMDB,
 	getGenresFromTMDB,
-	getTVShowsFromTMDB,
 } from "../../tmdb/tmdb.api.service.js";
 import { getTVShow } from "../data/TVDataAccess.service.js";
-import { handleError } from "../../utils/handleError.js";
-import { auth } from "../../auth/auth.service.js";
+import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
+import {
+	getUser,
+	updateUser,
+} from "../../users/data/usersDataAccess.service.js";
 
 const router = Router();
 
@@ -160,7 +162,67 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
-router.patch("/:id/watched", auth, async (req, res, next) => {
-	// req.user.watched.push({req.params.id);
+router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
+	const userId = req.user?._id;
+	const showId = req.params.id;
+	try {
+		const show = await getTVShow(showId);
+		if (!show) {
+			return res.status(404).send("Show not found");
+		}
+		if (!userId) {
+			return res.status(401).send("Unauthorized");
+		}
+		const user = await getUser(userId);
+		if (!user) {
+			return res.status(401).send("User not found");
+		}
+		if (!user.watchList.includes({ id: showId, type: "tv show" })) {
+			user.watchList.push({ id: showId, type: "tv show" });
+		} else {
+			user.watchList = user.watchList.splice(
+				user.watchList.indexOf({ id: showId, type: "tv show" }),
+				1,
+			);
+		}
+		await updateUser(userId, user);
+		return res.status(200).send(show);
+	} catch (error) {
+		return next(error);
+	}
 });
+
+router.patch(
+	"/:id/watched",
+	auth,
+	async (req: AuthenticatedRequest, res, next) => {
+		const userId = req.user?._id;
+		const showId = req.params.id;
+		try {
+			const show = await getTVShow(showId);
+			if (!show) {
+				return res.status(404).send("Show not found");
+			}
+			if (!userId) {
+				return res.status(401).send("Unauthorized");
+			}
+			const user = await getUser(userId);
+			if (!user) {
+				return res.status(401).send("User not found");
+			}
+			if (!user.watched.includes({ id: showId, type: "tv show" })) {
+				user.watched.push({ id: showId, type: "tv show" });
+			} else {
+				user.watched = user.watched.splice(
+					user.watched.indexOf({ id: showId, type: "tv show" }),
+					1,
+				);
+			}
+			await updateUser(userId, user);
+			return res.status(200).send(show);
+		} catch (error) {
+			return next(error);
+		}
+	},
+);
 export default router;

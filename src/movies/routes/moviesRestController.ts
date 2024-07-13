@@ -5,6 +5,11 @@ import {
 	getGenresFromTMDB,
 } from "../../tmdb/tmdb.api.service.js";
 import { getMovie } from "../data/movieDataAccess.service.js";
+import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
+import {
+	getUser,
+	updateUser,
+} from "../../users/data/usersDataAccess.service.js";
 
 const router = Router();
 
@@ -155,5 +160,79 @@ router.get("/:id", async (req, res, next) => {
 		return next(error);
 	}
 });
+
+router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
+	const userId = req.user?._id;
+	const movieId = req.params.id;
+	try {
+		const show = await getMovie(movieId);
+		if (!show) {
+			return res.status(404).send("Show not found");
+		}
+		if (!userId) {
+			return res.status(401).send("Unauthorized");
+		}
+		const user = await getUser(userId);
+		if (!user) {
+			return res.status(401).send("User not found");
+		}
+		let watchListed = false;
+		if (!user.watchList.includes({ id: movieId, type: "movie" })) {
+			user.watchList.push({ id: movieId, type: "movie" });
+			watchListed = true;
+		} else {
+			user.watchList = user.watchList.splice(
+				user.watchList.indexOf({ id: movieId, type: "movie" }),
+				1,
+			);
+		}
+		await updateUser(userId, user);
+		return res
+			.status(200)
+			.send(watchListed ? "Added to watchlist" : "Removed from watchlist");
+	} catch (error) {
+		return next(error);
+	}
+});
+
+router.patch(
+	"/:id/watched",
+	auth,
+	async (req: AuthenticatedRequest, res, next) => {
+		const userId = req.user?._id;
+		const movieId = req.params.id;
+		try {
+			const show = await getMovie(movieId);
+			if (!show) {
+				return res.status(404).send("Show not found");
+			}
+			if (!userId) {
+				return res.status(401).send("Unauthorized");
+			}
+			const user = await getUser(userId);
+			if (!user) {
+				return res.status(401).send("User not found");
+			}
+			let watched = false;
+			if (!user.watched.includes({ id: movieId, type: "movie" })) {
+				user.watched.push({ id: movieId, type: "movie" });
+				watched = true;
+			} else {
+				user.watched = user.watched.splice(
+					user.watched.indexOf({ id: movieId, type: "movie" }),
+					1,
+				);
+			}
+			await updateUser(userId, user);
+			return res
+				.status(200)
+				.send(
+					watched ? "Added to watched movies" : "Removed from watched movies",
+				);
+		} catch (error) {
+			return next(error);
+		}
+	},
+);
 
 export default router;
