@@ -17,7 +17,7 @@ export type IUser = {
 };
 type watchListEntry = {
 	type: "tv show" | "movie";
-	id: mongoose.Types.ObjectId;
+	id: string;
 };
 export type IUserDocument = IUser & mongoose.Document;
 

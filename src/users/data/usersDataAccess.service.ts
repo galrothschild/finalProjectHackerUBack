@@ -78,9 +78,9 @@ export const loginUser: (
 			return Promise.resolve({ token, refreshToken });
 		}
 		if (userFromDB.isAdmin) {
-			return Promise.reject("Invalid Email or Password");
+			return Promise.reject("Invalid Username or Password");
 		}
-		return Promise.reject("Invalid Email or Password");
+		return Promise.reject("Invalid Username or Password");
 	} catch (error: unknown) {
 		return Promise.reject(error);
 	}

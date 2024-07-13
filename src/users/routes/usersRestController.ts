@@ -159,7 +159,7 @@ router.post("/login", async (req: Request, res: Response) => {
 		});
 		return res.status(200).send(token);
 	} catch (error: unknown) {
-		if (error === "Invalid Email or Password") {
+		if (error === "Invalid Username or Password") {
 			return res.status(400).send(error);
 		}
 		if (
@@ -223,7 +223,7 @@ router.put("/:id", async (req, res) => {
 router.post("/refresh-token", async (req, res) => {
 	try {
 		const refreshToken = req.cookies.refreshToken;
-		if (!refreshToken) return res.status(401).send("No refresh token provided");
+		if (!refreshToken) return res.status(204);
 		const decoded = verifyRefreshToken(refreshToken) as { _id: string };
 		if (!decoded) return res.status(403).send("Invalid refresh token");
 		const user = await getUser(decoded._id);
@@ -231,6 +231,15 @@ router.post("/refresh-token", async (req, res) => {
 		return res.status(200).send(token);
 	} catch (error) {
 		return handleError(res, 500, error, "Error refreshing token");
+	}
+});
+
+router.post("/logout", async (_req, res) => {
+	try {
+		res.clearCookie("refreshToken");
+		return res.status(200).send("Logged out");
+	} catch (error) {
+		return handleError(res, 500, error, "Error logging out");
 	}
 });
 
