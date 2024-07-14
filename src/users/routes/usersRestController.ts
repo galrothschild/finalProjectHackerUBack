@@ -243,4 +243,6 @@ router.post("/logout", async (_req, res) => {
 	}
 });
 
+// TODO: add get watched shows, watch listed shows, and same for movies
+
 export default router;
