@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { watch } from "node:fs";
 
 export type IUser = {
 	username: string;
@@ -18,6 +19,7 @@ export type IUser = {
 type watchListEntry = {
 	type: "tv show" | "movie";
 	id: string;
+	watched: boolean;
 };
 export type IUserDocument = IUser & mongoose.Document;
 
@@ -28,6 +30,7 @@ export type loginUserType = {
 const watchListEntrySchema = new mongoose.Schema({
 	type: String,
 	id: String,
+	watched: Boolean,
 });
 
 const UserSchema = new mongoose.Schema<IUserDocument>({
@@ -46,7 +49,6 @@ const UserSchema = new mongoose.Schema<IUserDocument>({
 		middle: { type: String },
 	},
 	isAdmin: { type: Boolean, default: false },
-	watched: { type: [watchListEntrySchema], default: [] },
 	watchList: { type: [watchListEntrySchema], default: [] },
 });
 

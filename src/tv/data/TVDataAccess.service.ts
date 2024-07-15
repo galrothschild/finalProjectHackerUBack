@@ -27,20 +27,22 @@ export const getTVShow = async (id: string): Promise<ITVShow> => {
 
 export const patchUsersTVShows = async (
 	user: IUserDocument,
-	movieId: string,
+	showId: string,
 	watched: boolean,
 ) => {
 	const userID = user._id as string;
-	const watchedList = watched ? "watched" : "watchList";
-	const index = user[watchedList].findIndex(
-		(watchListEntry) => watchListEntry.id === movieId,
+	const index = user.watchList.findIndex(
+		(watchListEntry) =>
+			watchListEntry.id === showId && watchListEntry.type === "tv show",
 	);
 	let added = false;
 	if (index === -1) {
-		user?.[watchedList].push({ id: movieId, type: "tv show" });
+		user.watchList.push({ id: showId, type: "tv show", watched });
 		added = true;
+	} else if (user.watchList[index].watched === watched) {
+		user.watchList.splice(index, 1);
 	} else {
-		user?.[watchedList].splice(index, 1);
+		user.watchList[index].watched = watched;
 	}
 	await updateUser(userID, user);
 	return added;

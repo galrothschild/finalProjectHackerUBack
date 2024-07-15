@@ -6,10 +6,7 @@ import {
 } from "../../tmdb/tmdb.api.service.js";
 import { getTVShow, patchUsersTVShows } from "../data/TVDataAccess.service.js";
 import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
-import {
-	getUser,
-	updateUser,
-} from "../../users/data/usersDataAccess.service.js";
+import { getUser } from "../../users/data/usersDataAccess.service.js";
 
 const router = Router();
 

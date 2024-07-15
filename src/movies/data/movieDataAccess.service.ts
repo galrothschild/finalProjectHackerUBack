@@ -31,16 +31,18 @@ export const patchUsersMovies = async (
 	watched: boolean,
 ) => {
 	const userID = user._id as string;
-	const watchedList = watched ? "watched" : "watchList";
-	const index = user[watchedList].findIndex(
-		(watchListEntry) => watchListEntry.id === movieId,
+	const index = user.watchList.findIndex(
+		(watchListEntry) =>
+			watchListEntry.id === movieId && watchListEntry.type === "movie",
 	);
 	let added = false;
 	if (index === -1) {
-		user?.[watchedList].push({ id: movieId, type: "movie" });
+		user.watchList.push({ id: movieId, type: "movie", watched });
 		added = true;
+	} else if (user.watchList[index].watched === watched) {
+		user.watchList.splice(index, 1);
 	} else {
-		user?.[watchedList].splice(index, 1);
+		user.watchList[index].watched = watched;
 	}
 	await updateUser(userID, user);
 	return added;
