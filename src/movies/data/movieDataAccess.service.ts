@@ -1,5 +1,5 @@
 import { getMovieFromTMDB } from "../../tmdb/tmdb.api.service.js";
-import type { IUser, IUserDocument } from "../../users/data/User.model.js";
+import type { IUserDocument } from "../../users/data/User.model.js";
 import { updateUser } from "../../users/data/usersDataAccess.service.js";
 import { MovieModel, type IMovie } from "./Movie.model.js";
 import { normalizeMovie } from "./normalizeMovie.js";

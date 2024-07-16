@@ -14,7 +14,6 @@ export type IUser = {
 	};
 	isAdmin: boolean;
 	watchList: watchListEntry[];
-	watched: watchListEntry[];
 };
 type watchListEntry = {
 	type: "tv show" | "movie";

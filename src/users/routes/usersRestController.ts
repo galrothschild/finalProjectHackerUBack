@@ -12,6 +12,9 @@ import { handleError } from "../../utils/handleError.js";
 import { normalizeUser } from "../utils/normalizeUser.js";
 import type { loginUserType } from "../data/User.model.js";
 import { generateToken, verifyRefreshToken } from "../../auth/Providers/jwt.js";
+import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
+import { getTVShow } from "../../tv/data/TVDataAccess.service.js";
+import { getMovie } from "../../movies/data/movieDataAccess.service.js";
 
 const router = Router();
 
@@ -169,6 +172,36 @@ router.post("/login", async (req: Request, res: Response) => {
 			return res.status(403).send(error);
 		}
 		return handleError(res, 500, error, "logging in user");
+	}
+});
+router.get("/watchlist", auth, async (req: AuthenticatedRequest, res) => {
+	try {
+		const id = req.user._id;
+		if (!id) {
+			return res.status(401).send("Unauthorized");
+		}
+		const user = await getUser(id);
+		if (!user) {
+			return res.status(401).send("User not found");
+		}
+		const tvPromises = user.watchList
+			.filter((entry) => entry.type === "tv show")
+			.map(async (entry) => {
+				const showDetails = await getTVShow(entry.id);
+				return { ...showDetails, watched: entry.watched };
+			});
+
+		const moviePromises = user.watchList
+			.filter((entry) => entry.type === "movie")
+			.map(async (entry) => {
+				const movieDetails = await getMovie(entry.id);
+				return { ...movieDetails, watched: entry.watched };
+			});
+		const tv = await Promise.all(tvPromises);
+		const movies = await Promise.all(moviePromises);
+		return res.status(200).send({ tv, movies });
+	} catch (error) {
+		return handleError(res, 500, error, "Error getting watchlist");
 	}
 });
 
