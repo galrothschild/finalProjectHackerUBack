@@ -20,7 +20,7 @@ export const getFromTMDB = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.error(error);
+		console.log(error.red);
 		return null;
 	}
 };
@@ -38,7 +38,7 @@ export const getGenresFromTMDB = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.error(error);
+		console.log(error.red);
 		return null;
 	}
 };
