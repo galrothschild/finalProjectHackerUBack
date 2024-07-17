@@ -6,7 +6,7 @@ import { type ITVShow, TVShowModel } from "./Tv.model.js";
 
 export const getTVShow = async (id: string): Promise<ITVShow> => {
 	try {
-		const tvShow = await TVShowModel.findOne({ id });
+		const tvShow = await TVShowModel.findOne({ id }).lean();
 		if (tvShow) {
 			return tvShow;
 		}

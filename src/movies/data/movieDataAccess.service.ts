@@ -6,7 +6,7 @@ import { normalizeMovie } from "./normalizeMovie.js";
 
 export const getMovie = async (id: string): Promise<IMovie> => {
 	try {
-		const movie = await MovieModel.findOne({ id });
+		const movie = await MovieModel.findOne({ id }).lean();
 		if (movie) {
 			return movie;
 		}
