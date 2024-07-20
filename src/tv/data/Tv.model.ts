@@ -3,6 +3,7 @@ import type {
 	Genre,
 	ProductionCompany,
 } from "../../movies/data/Movie.model.js";
+import { CastSchema, type ICastMember } from "../../utils/common.model.js";
 export interface ITVShow {
 	backdrop_path: string;
 	first_air_date: string;
@@ -26,6 +27,7 @@ export interface ITVShow {
 	status: string;
 	tagline: string;
 	type: string;
+	cast: ICastMember[];
 }
 
 export interface Episode {
@@ -170,6 +172,7 @@ const TVShowSchema = new mongoose.Schema<ITVShow>({
 	status: { type: String },
 	tagline: { type: String },
 	type: { type: String },
+	cast: { type: [CastSchema] },
 });
 
 export const TVShowModel = mongoose.model<ITVShow>("TVShow", TVShowSchema);

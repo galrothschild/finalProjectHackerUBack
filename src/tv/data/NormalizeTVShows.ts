@@ -1,6 +1,10 @@
+import type { ICastMember } from "../../utils/common.model.js";
 import type { ITVShow } from "./Tv.model.js";
 
-export const normalizeTVShow = (show: ITVShow): ITVShow => {
+export const normalizeTVShow = (
+	show: ITVShow,
+	cast: ICastMember[],
+): ITVShow => {
 	if (!show.overview) {
 		show.overview = "No overview available";
 	}
@@ -9,5 +13,6 @@ export const normalizeTVShow = (show: ITVShow): ITVShow => {
 	} else {
 		show.poster_path = `https://image.tmdb.org/t/p/w200${show.poster_path}`;
 	}
+	show.cast = cast;
 	return show;
 };

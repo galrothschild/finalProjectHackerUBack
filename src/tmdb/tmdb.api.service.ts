@@ -1,3 +1,5 @@
+import type { ICastMember } from "../utils/common.model.js";
+
 const API_URL = process.env.TMDB_API_URL || "https://api.themoviedb.org/3";
 
 const bearer = `Bearer ${process.env.API_READ_TOKEN}`;
@@ -78,7 +80,7 @@ export const getMovieFromTMDB = async (id: string): Promise<any> => {
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.error(error);
+		console.log(error.red);
 		return null;
 	}
 };
@@ -101,7 +103,7 @@ export const getTVShowsFromTMDB = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.error(error);
+		console.log(error.red);
 		return null;
 	}
 };
@@ -118,7 +120,23 @@ export const getTVShowFromTMDB = async (id: string): Promise<any> => {
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.error(error);
+		console.log(error.red);
+		return null;
+	}
+};
+
+export const getCreditsFromTMDB = async (id, api: "movie" | "tv") => {
+	try {
+		const response = await fetch(`${API_URL}/${api}/${id}/credits`, {
+			headers: {
+				Authorization: bearer,
+				"Content-Type": "application/json",
+			},
+		});
+		const data = (await response.json()) as { cast: ICastMember[] };
+		return data;
+	} catch (error) {
+		console.log(error.red);
 		return null;
 	}
 };

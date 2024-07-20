@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { CastSchema, type ICastMember } from "../../utils/common.model.js";
 
 export interface IMovie {
 	adult: boolean;
@@ -26,6 +27,7 @@ export interface IMovie {
 	video: boolean;
 	vote_average: number;
 	vote_count: number;
+	cast: ICastMember[];
 }
 
 export interface Genre {
@@ -105,6 +107,7 @@ const MovieSchema = new mongoose.Schema<IMovieDocument>({
 	video: { type: Boolean, required: true },
 	vote_average: { type: Number, required: true },
 	vote_count: { type: Number, required: true },
+	cast: { type: [CastSchema] },
 });
 
 export const MovieModel = mongoose.model<IMovieDocument>("Movie", MovieSchema);

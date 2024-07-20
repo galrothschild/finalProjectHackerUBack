@@ -1,6 +1,7 @@
+import type { ICastMember } from "../../utils/common.model.js";
 import type { IMovie } from "./Movie.model.js";
 
-export const normalizeMovie = (movie: IMovie): IMovie => {
+export const normalizeMovie = (movie: IMovie, cast: ICastMember[]): IMovie => {
 	if (!movie.overview) {
 		movie.overview = "No overview available";
 	}
@@ -9,5 +10,6 @@ export const normalizeMovie = (movie: IMovie): IMovie => {
 	} else {
 		movie.poster_path = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
 	}
+	movie.cast = cast;
 	return movie;
 };

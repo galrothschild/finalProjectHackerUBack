@@ -1,4 +1,7 @@
-import { getMovieFromTMDB } from "../../tmdb/tmdb.api.service.js";
+import {
+	getCreditsFromTMDB,
+	getMovieFromTMDB,
+} from "../../tmdb/tmdb.api.service.js";
 import type { IUserDocument } from "../../users/data/User.model.js";
 import { updateUser } from "../../users/data/usersDataAccess.service.js";
 import { MovieModel, type IMovie } from "./Movie.model.js";
@@ -17,7 +20,8 @@ export const getMovie = async (id: string): Promise<IMovie> => {
 		if (movieFromTMDB.status_code === 34) {
 			return null;
 		}
-		const normalizedMovie = normalizeMovie(movieFromTMDB);
+		const cast = await getMovieCredits(id);
+		const normalizedMovie = normalizeMovie(movieFromTMDB, cast);
 		const newMovie = new MovieModel(normalizedMovie);
 		return await newMovie.save();
 	} catch (error) {
@@ -46,4 +50,16 @@ export const patchUsersMovies = async (
 	}
 	await updateUser(userID, user);
 	return added;
+};
+
+export const getMovieCredits = async (id: string) => {
+	try {
+		const credits = await getCreditsFromTMDB(id, "movie");
+		if (!credits) {
+			return null;
+		}
+		return credits.cast;
+	} catch (error) {
+		return Promise.reject(error);
+	}
 };

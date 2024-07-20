@@ -1,4 +1,7 @@
-import { getTVShowFromTMDB } from "../../tmdb/tmdb.api.service.js";
+import {
+	getCreditsFromTMDB,
+	getTVShowFromTMDB,
+} from "../../tmdb/tmdb.api.service.js";
 import type { IUserDocument } from "../../users/data/User.model.js";
 import { updateUser } from "../../users/data/usersDataAccess.service.js";
 import { normalizeTVShow } from "./NormalizeTVShows.js";
@@ -17,7 +20,8 @@ export const getTVShow = async (id: string): Promise<ITVShow> => {
 		if (tvShowFromTMDB.status_code === 34) {
 			return null;
 		}
-		const normalizedTVShow = normalizeTVShow(tvShowFromTMDB);
+		const cast = await getTVShowCredits(id);
+		const normalizedTVShow = normalizeTVShow(tvShowFromTMDB, cast);
 		const newTVShow = new TVShowModel(normalizedTVShow);
 		return await newTVShow.save();
 	} catch (error) {
@@ -46,4 +50,16 @@ export const patchUsersTVShows = async (
 	}
 	await updateUser(userID, user);
 	return added;
+};
+
+export const getTVShowCredits = async (id: string) => {
+	try {
+		const credits = await getCreditsFromTMDB(id, "tv");
+		if (!credits) {
+			return null;
+		}
+		return credits.cast;
+	} catch (error) {
+		return Promise.reject(error);
+	}
 };
