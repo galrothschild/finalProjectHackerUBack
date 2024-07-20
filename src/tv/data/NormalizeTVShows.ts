@@ -13,6 +13,11 @@ export const normalizeTVShow = (
 	} else {
 		show.poster_path = `https://image.tmdb.org/t/p/w200${show.poster_path}`;
 	}
-	show.cast = cast;
+	show.cast = cast.map((castMember) => {
+		return {
+			...castMember,
+			profile_path: `https://image.tmdb.org/t/p/w200${castMember.profile_path}`,
+		};
+	});
 	return show;
 };

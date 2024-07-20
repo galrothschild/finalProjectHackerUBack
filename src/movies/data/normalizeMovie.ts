@@ -10,6 +10,11 @@ export const normalizeMovie = (movie: IMovie, cast: ICastMember[]): IMovie => {
 	} else {
 		movie.poster_path = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
 	}
-	movie.cast = cast;
+	movie.cast = cast.map((castMember) => {
+		return {
+			...castMember,
+			profile_path: `https://image.tmdb.org/t/p/w200${castMember.profile_path}`,
+		};
+	});
 	return movie;
 };
