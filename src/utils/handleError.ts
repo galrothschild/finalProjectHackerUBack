@@ -1,6 +1,7 @@
 import type { Response } from "express";
 import type { ZodError } from "zod";
 import "colors";
+import logger from "./logger/logger.js";
 export const handleError = (
 	res: Response,
 	status: number,
@@ -11,8 +12,8 @@ export const handleError = (
 		typeof error === "object" && error !== null && "message" in error
 			? error.message
 			: error;
-	console.log(`Error ${errorOccuredAt}: ${message}`.red);
-	return res.status(status).send({error: message});
+	logger.error(`${errorOccuredAt}: ${message}`.red);
+	return res.status(status).send({ error: message });
 };
 
 export const handleZodError: (error: ZodError) => Promise<ZodError> = async (
