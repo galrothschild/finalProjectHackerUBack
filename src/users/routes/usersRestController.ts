@@ -15,6 +15,7 @@ import { generateToken, verifyRefreshToken } from "../../auth/Providers/jwt.js";
 import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
 import { getTVShow } from "../../tv/data/TVDataAccess.service.js";
 import { getMovie } from "../../movies/data/movieDataAccess.service.js";
+import logger from "../../utils/logger/logger.js";
 
 const router = Router();
 
@@ -206,7 +207,14 @@ router.get("/watchlist", auth, async (req: AuthenticatedRequest, res) => {
 });
 
 // get all users
-router.get("/", async (_req, res) => {
+router.get("/", auth, async (req: AuthenticatedRequest, res) => {
+	const user = req.user;
+	if (!user) {
+		return res.status(401).send("Unauthorized");
+	}
+	if (user.isAdmin === false) {
+		return res.status(403).send("Forbidden");
+	}
 	try {
 		const users = await getAllUsers();
 		if (!users) {
@@ -246,6 +254,19 @@ router.put("/:id", async (req, res) => {
 	try {
 		const id = req.params.id;
 		const user = req.body;
+		const userExistsEmail = await doesUserExist(user.email, "email");
+		if (userExistsEmail && userExistsEmail._id.toString() !== id) {
+			return res
+				.status(400)
+				.send("User already exists with this email or username");
+		}
+		const userExistsUsername = await doesUserExist(user.username, "username");
+		if (userExistsUsername && userExistsUsername?._id.toString() !== id) {
+			logger.error("User already exists with this username");
+			return res
+				.status(400)
+				.send("User already exists with this email or username");
+		}
 		const updatedUser = await updateUser(id, user);
 		return res.status(200).send(updatedUser);
 	} catch (error) {
