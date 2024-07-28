@@ -16,11 +16,10 @@ export const handleError = (
 	return res.status(status).send({ error: message });
 };
 
-export const handleZodError: (error: ZodError) => Promise<ZodError> = async (
-	error,
-) => {
-	const errorMessage = error.errors.map((detail) => detail.message).join(", ");
-	const errorObj = { ...error, message: errorMessage };
-	console.error(errorObj.message.red);
-	return Promise.reject({ ...errorObj, status: 400 });
+export const handleZodError = (res, error: ZodError) => {
+	const message = error.errors
+		.map((err) => `${err.path[0]}: ${err.message}`)
+		.join("\n");
+	logger.error(`Validating User: ${message}`.red);
+	return res.status(400).send(message);
 };

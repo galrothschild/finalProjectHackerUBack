@@ -8,7 +8,7 @@ import {
 	loginUser,
 	updateUser,
 } from "../data/usersDataAccess.service.js";
-import { handleError } from "../../utils/handleError.js";
+import { handleError, handleZodError } from "../../utils/handleError.js";
 import { normalizeUser } from "../utils/normalizeUser.js";
 import type { loginUserType } from "../data/User.model.js";
 import { generateToken, verifyRefreshToken } from "../../auth/Providers/jwt.js";
@@ -16,6 +16,7 @@ import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
 import { getTVShow } from "../../tv/data/TVDataAccess.service.js";
 import { getMovie } from "../../movies/data/movieDataAccess.service.js";
 import logger from "../../utils/logger/logger.js";
+import validateUser from "../validation/userValidation.service.js";
 
 const router = Router();
 
@@ -80,10 +81,16 @@ router.post("/", async (req, res) => {
 				.status(400)
 				.send("User already exists with this email or username");
 		}
+		try {
+			validateUser(user);
+		} catch (error) {
+			return handleZodError(res, error);
+		}
 		const normalizedUser = normalizeUser(user);
 		const createdUser = await createUser(normalizedUser);
 		return res.status(201).send(createdUser);
 	} catch (error) {
+		console.log(error);
 		return handleError(res, 500, error, "Error creating user");
 	}
 });
@@ -266,6 +273,11 @@ router.put("/:id", async (req, res) => {
 			return res
 				.status(400)
 				.send("User already exists with this email or username");
+		}
+		try {
+			validateUser(user);
+		} catch (error) {
+			return handleZodError(res, error);
 		}
 		const updatedUser = await updateUser(id, user);
 		return res.status(200).send(updatedUser);
