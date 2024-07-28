@@ -1,13 +1,17 @@
 import {
+	getCastByAppearanceId,
+	processCredits,
+} from "../../credits/data/castDataAccess.service.js";
+import {
 	getCreditsFromTMDB,
 	getMovieFromTMDB,
 } from "../../tmdb/tmdb.api.service.js";
 import type { IUserDocument } from "../../users/data/User.model.js";
 import { updateUser } from "../../users/data/usersDataAccess.service.js";
-import { MovieModel, type IMovie } from "./Movie.model.js";
+import { type IMovieDocument, MovieModel } from "./Movie.model.js";
 import { normalizeMovie } from "./normalizeMovie.js";
 
-export const getMovie = async (id: string): Promise<IMovie> => {
+export const getMovie = async (id: string): Promise<IMovieDocument> => {
 	try {
 		const movie = await MovieModel.findOne({ id }).lean();
 		if (movie) {
@@ -21,8 +25,9 @@ export const getMovie = async (id: string): Promise<IMovie> => {
 			return null;
 		}
 		const cast = await getMovieCredits(id);
-		const normalizedMovie = normalizeMovie(movieFromTMDB, cast);
+		const normalizedMovie = normalizeMovie(movieFromTMDB);
 		const newMovie = new MovieModel(normalizedMovie);
+		await processCredits(cast, "movie", newMovie._id);
 		return await newMovie.save();
 	} catch (error) {
 		return Promise.reject(error);
@@ -59,6 +64,18 @@ export const getMovieCredits = async (id: string) => {
 			return null;
 		}
 		return credits.cast;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+export const getMovieCreditsFromDB = async (id: string) => {
+	try {
+		const movie = await MovieModel.findOne({ _id: id }).lean();
+		if (!movie) {
+			return null;
+		}
+		return { cast: await getCastByAppearanceId(id) };
 	} catch (error) {
 		return Promise.reject(error);
 	}

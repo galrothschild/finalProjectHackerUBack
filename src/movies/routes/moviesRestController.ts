@@ -4,7 +4,11 @@ import {
 	getFromTMDB,
 	getGenresFromTMDB,
 } from "../../tmdb/tmdb.api.service.js";
-import { getMovie, patchUsersMovies } from "../data/movieDataAccess.service.js";
+import {
+	getMovie,
+	getMovieCreditsFromDB,
+	patchUsersMovies,
+} from "../data/movieDataAccess.service.js";
 import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
 import {
 	getUser,
@@ -154,6 +158,24 @@ router.get("/:id", async (req, res, next) => {
 		const movie = await getMovie(req.params.id);
 		if (movie) {
 			return res.status(200).send(movie);
+		}
+		return res.status(404).send("Movie not found");
+	} catch (error) {
+		return next(error);
+	}
+});
+router.get("/:id/credits", async (req, res, next) => {
+	try {
+		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
+			return res.status(400).send("Invalid movie id");
+		}
+		const movie = await getMovie(req.params.id);
+		if (!movie || !movie._id) {
+			return res.status(404).send("Movie not found");
+		}
+		const movieCredits = await getMovieCreditsFromDB(movie._id as string);
+		if (movieCredits) {
+			return res.status(200).send(movieCredits);
 		}
 		return res.status(404).send("Movie not found");
 	} catch (error) {

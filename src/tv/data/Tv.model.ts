@@ -3,7 +3,7 @@ import type {
 	Genre,
 	ProductionCompany,
 } from "../../movies/data/Movie.model.js";
-import { CastSchema, type ICastMember } from "../../utils/common.model.js";
+import { CastSchema, type ICastMember } from "../../credits/data/Cast.model.js";
 export interface ITVShow {
 	backdrop_path: string;
 	first_air_date: string;

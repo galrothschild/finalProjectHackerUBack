@@ -1,4 +1,4 @@
-import type { ICastMember } from "../utils/common.model.js";
+import type { ICastMember } from "../credits/data/Cast.model.js";
 
 const API_URL = process.env.TMDB_API_URL || "https://api.themoviedb.org/3";
 

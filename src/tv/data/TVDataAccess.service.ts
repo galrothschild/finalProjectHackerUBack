@@ -1,3 +1,4 @@
+import { processCredits } from "../../credits/data/castDataAccess.service.js";
 import {
 	getCreditsFromTMDB,
 	getTVShowFromTMDB,
@@ -21,8 +22,9 @@ export const getTVShow = async (id: string): Promise<ITVShow> => {
 			return null;
 		}
 		const cast = await getTVShowCredits(id);
-		const normalizedTVShow = normalizeTVShow(tvShowFromTMDB, cast);
+		const normalizedTVShow = normalizeTVShow(tvShowFromTMDB);
 		const newTVShow = new TVShowModel(normalizedTVShow);
+		await processCredits(cast, "tvshow", newTVShow._id);
 		return await newTVShow.save();
 	} catch (error) {
 		return Promise.reject(error);

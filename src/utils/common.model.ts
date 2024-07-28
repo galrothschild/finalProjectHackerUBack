@@ -1,25 +1,32 @@
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
+import { CastSchema } from "../credits/data/Cast.model.js";
 
-export type ICastMember = {
-	gender: 0 | 1 | 2;
-	id: number;
-	known_for_department: string;
-	name: string;
-	original_name: string;
-	popularity: number;
-	profile_path: string;
-	character: string;
+type ICastAppearance = {
+	role: string;
+	castMember: string;
+	appearedIn: string;
+	appearedInType: string;
 	credit_id: string;
-	order: number;
 };
 
-export const CastSchema = new mongoose.Schema<ICastMember>({
-	gender: { type: Number },
-	id: { type: Number },
-	known_for_department: { type: String },
-	name: { type: String },
-	original_name: { type: String },
-	profile_path: { type: String },
-	character: { type: String },
+const castAppearanceSchema = new Schema({
+	role: { type: String, required: true }, // Role can be character name or role like director
+	castMemberID: {
+		type: Schema.Types.ObjectId,
+		ref: "CastMember",
+		required: true,
+	},
+	appearedIn: {
+		type: Schema.Types.ObjectId,
+		required: true,
+		refPath: "appearedInType",
+	}, // This will reference either a Movie or a Show
+	appearedInType: { type: String, enum: ["movie", "tvshow"], required: true },
 	credit_id: { type: String },
+	castMember: CastSchema,
 });
+
+export const castAppearanceModel = model<ICastAppearance>(
+	"CastAppearance",
+	castAppearanceSchema,
+);
