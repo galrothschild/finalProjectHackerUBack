@@ -1,10 +1,12 @@
 import { model, Schema } from "mongoose";
 import type { ICastMember } from "../credits/data/Cast.model.js";
+import type { IMovieDocument } from "../movies/data/Movie.model.js";
+import type { ITVShowDocument } from "../tv/data/Tv.model.js";
 
 type ICastAppearance = {
 	role: string;
 	castMemberID: Schema.Types.ObjectId | ICastMember;
-	appearedIn: string;
+	appearedIn: Schema.Types.ObjectId | IMovieDocument | ITVShowDocument;
 	appearedInType: string;
 	credit_id: string;
 };

@@ -177,6 +177,6 @@ const TVShowSchema = new mongoose.Schema({
 });
 
 export const TVShowModel = mongoose.model<ITVShowDocument>(
-	"TVShow",
+	"tvshow",
 	TVShowSchema,
 );

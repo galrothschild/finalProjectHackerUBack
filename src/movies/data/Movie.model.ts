@@ -109,4 +109,4 @@ const MovieSchema = new mongoose.Schema<IMovieDocument>({
 	vote_count: { type: Number, required: true },
 });
 
-export const MovieModel = mongoose.model<IMovieDocument>("Movie", MovieSchema);
+export const MovieModel = mongoose.model<IMovieDocument>("movie", MovieSchema);

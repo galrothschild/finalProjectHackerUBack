@@ -1,4 +1,5 @@
 import { castAppearanceModel } from "../../utils/common.model.js";
+import logger from "../../utils/logger/logger.js";
 import { CastModel, type ICastMember } from "./Cast.model.js";
 
 export const processCredits = async (
@@ -74,7 +75,34 @@ export const getCastByAppearanceId = async (
 			};
 		});
 	} catch (error) {
-		console.error("Error getting cast:", error);
+		logger.error("Error getting cast:", error);
+		throw error;
+	}
+};
+
+export const getCreditsByCastMemberId = async (castMemberID) => {
+	try {
+		const castAppearances = await castAppearanceModel
+			.find({ castMemberID })
+			.populate({ path: "appearedIn" });
+		return castAppearances.map((castAppearance) => {
+			return {
+				...castAppearance.toObject().appearedIn,
+				role: castAppearance.role,
+			};
+		});
+	} catch (error) {
+		logger.error("Error getting credits:", error);
+		throw error;
+	}
+};
+
+export const getCastMember = async (id) => {
+	try {
+		const castMember = await CastModel.findOne({ id }).lean();
+		return castMember;
+	} catch (error) {
+		logger.error("Error getting cast member:", error);
 		throw error;
 	}
 };
