@@ -60,12 +60,8 @@ export const getCastByAppearanceId = async (appearanceId) => {
 			.find({
 				appearedIn: appearanceId,
 			})
-			.populate("castMember");
-		return castAppearances.map((appearance) => ({
-			role: appearance.role,
-			credit_id: appearance.credit_id,
-			castMember: appearance.castMember,
-		}));
+			.populate({ path: "castMemberID", model: "castMember" });
+		return castAppearances;
 	} catch (error) {
 		console.error("Error getting cast:", error);
 		throw error;

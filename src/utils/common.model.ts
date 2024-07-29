@@ -13,7 +13,7 @@ const castAppearanceSchema = new Schema({
 	role: { type: String, required: true }, // Role can be character name or role like director
 	castMemberID: {
 		type: Schema.Types.ObjectId,
-		ref: "CastMember",
+		ref: "castMember",
 		required: true,
 	},
 	appearedIn: {
