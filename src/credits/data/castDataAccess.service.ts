@@ -42,7 +42,9 @@ const processCastMember = async (credit: ICastMember) => {
 
 		const newCastMember = new CastModel({
 			...credit,
-			profile_path: `https://image.tmdb.org/t/p/w200${credit.profile_path}`,
+			profile_path: credit.profile_path
+				? `https://image.tmdb.org/t/p/w200${credit.profile_path}`
+				: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
 		});
 		const castMemberDocumnent = await newCastMember.save();
 		return {
@@ -54,14 +56,23 @@ const processCastMember = async (credit: ICastMember) => {
 		return Promise.reject(error);
 	}
 };
-export const getCastByAppearanceId = async (appearanceId) => {
+export const getCastByAppearanceId = async (
+	appearedInID,
+	type: "movie" | "tvshow",
+) => {
 	try {
 		const castAppearances = await castAppearanceModel
 			.find({
-				appearedIn: appearanceId,
+				appearedIn: appearedInID,
+				appearedInType: type,
 			})
 			.populate({ path: "castMemberID", model: "castMember" });
-		return castAppearances;
+		return castAppearances.map((castAppearance) => {
+			return {
+				...castAppearance.toObject().castMemberID,
+				role: castAppearance.role,
+			};
+		});
 	} catch (error) {
 		console.error("Error getting cast:", error);
 		throw error;

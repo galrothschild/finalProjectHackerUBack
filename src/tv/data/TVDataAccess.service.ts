@@ -1,4 +1,7 @@
-import { processCredits } from "../../credits/data/castDataAccess.service.js";
+import {
+	getCastByAppearanceId,
+	processCredits,
+} from "../../credits/data/castDataAccess.service.js";
 import {
 	getCreditsFromTMDB,
 	getTVShowFromTMDB,
@@ -6,9 +9,9 @@ import {
 import type { IUserDocument } from "../../users/data/User.model.js";
 import { updateUser } from "../../users/data/usersDataAccess.service.js";
 import { normalizeTVShow } from "./NormalizeTVShows.js";
-import { type ITVShow, TVShowModel } from "./Tv.model.js";
+import { type ITVShowDocument, TVShowModel } from "./Tv.model.js";
 
-export const getTVShow = async (id: string): Promise<ITVShow> => {
+export const getTVShow = async (id: string): Promise<ITVShowDocument> => {
 	try {
 		const tvShow = await TVShowModel.findOne({ id }).lean();
 		if (tvShow) {
@@ -24,7 +27,7 @@ export const getTVShow = async (id: string): Promise<ITVShow> => {
 		const cast = await getTVShowCredits(id);
 		const normalizedTVShow = normalizeTVShow(tvShowFromTMDB);
 		const newTVShow = new TVShowModel(normalizedTVShow);
-		await processCredits(cast, "tvshow", newTVShow._id);
+		processCredits(cast, "tvshow", newTVShow._id);
 		return await newTVShow.save();
 	} catch (error) {
 		return Promise.reject(error);
@@ -61,6 +64,18 @@ export const getTVShowCredits = async (id: string) => {
 			return null;
 		}
 		return credits.cast;
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+export const getTVShowCreditsFromDB = async (id: string) => {
+	try {
+		const tvShow = await TVShowModel.findOne({ _id: id }).lean();
+		if (!tvShow) {
+			return null;
+		}
+		return await getCastByAppearanceId(id, "tvshow");
 	} catch (error) {
 		return Promise.reject(error);
 	}

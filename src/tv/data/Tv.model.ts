@@ -29,6 +29,7 @@ export interface ITVShow {
 	type: string;
 	cast: ICastMember[];
 }
+export type ITVShowDocument = ITVShow & mongoose.Document;
 
 export interface Episode {
 	id: number;
@@ -149,7 +150,7 @@ const EpisodeSchema = new mongoose.Schema<Episode>({
 
 export const EpisodeModel = mongoose.model<Episode>("Episode", EpisodeSchema);
 
-const TVShowSchema = new mongoose.Schema<ITVShow>({
+const TVShowSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	backdrop_path: { type: String, required: false },
 	first_air_date: { type: String },
@@ -175,4 +176,7 @@ const TVShowSchema = new mongoose.Schema<ITVShow>({
 	cast: { type: [CastSchema] },
 });
 
-export const TVShowModel = mongoose.model<ITVShow>("TVShow", TVShowSchema);
+export const TVShowModel = mongoose.model<ITVShowDocument>(
+	"TVShow",
+	TVShowSchema,
+);

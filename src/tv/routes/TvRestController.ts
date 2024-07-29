@@ -3,8 +3,13 @@ import {
 	getFilteredFromTMDB,
 	getFromTMDB,
 	getGenresFromTMDB,
+	getTVShowFromTMDB,
 } from "../../tmdb/tmdb.api.service.js";
-import { getTVShow, patchUsersTVShows } from "../data/TVDataAccess.service.js";
+import {
+	getTVShow,
+	getTVShowCreditsFromDB,
+	patchUsersTVShows,
+} from "../data/TVDataAccess.service.js";
 import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
 import { getUser } from "../../users/data/usersDataAccess.service.js";
 
@@ -152,6 +157,25 @@ router.get("/:id", async (req, res, next) => {
 		const show = await getTVShow(req.params.id);
 		if (show) {
 			return res.status(200).send(show);
+		}
+		return res.status(404).send("Show not found");
+	} catch (error) {
+		return next(error);
+	}
+});
+
+router.get("/:id/credits", async (req, res, next) => {
+	try {
+		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
+			return res.status(400).send("Invalid show id");
+		}
+		const show = await getTVShow(req.params.id);
+		if (!show || !show._id) {
+			return res.status(404).send("Show not found");
+		}
+		const showCredits = await getTVShowCreditsFromDB(show._id as string);
+		if (showCredits) {
+			return res.status(200).send(showCredits);
 		}
 		return res.status(404).send("Show not found");
 	} catch (error) {

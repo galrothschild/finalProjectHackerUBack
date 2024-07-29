@@ -27,7 +27,7 @@ export const getMovie = async (id: string): Promise<IMovieDocument> => {
 		const cast = await getMovieCredits(id);
 		const normalizedMovie = normalizeMovie(movieFromTMDB);
 		const newMovie = new MovieModel(normalizedMovie);
-		await processCredits(cast, "movie", newMovie._id);
+		processCredits(cast, "movie", newMovie._id);
 		return await newMovie.save();
 	} catch (error) {
 		return Promise.reject(error);
@@ -75,7 +75,7 @@ export const getMovieCreditsFromDB = async (id: string) => {
 		if (!movie) {
 			return null;
 		}
-		return { cast: await getCastByAppearanceId(id) };
+		return { cast: await getCastByAppearanceId(id, "movie") };
 	} catch (error) {
 		return Promise.reject(error);
 	}
