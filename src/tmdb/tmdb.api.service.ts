@@ -127,12 +127,15 @@ export const getTVShowFromTMDB = async (id: string): Promise<any> => {
 
 export const getCreditsFromTMDB = async (id, api: "movie" | "tv") => {
 	try {
-		const response = await fetch(`${API_URL}/${api}/${id}/credits`, {
-			headers: {
-				Authorization: bearer,
-				"Content-Type": "application/json",
+		const response = await fetch(
+			`${API_URL}/${api}/${id}/${api === "movie" ? "credits" : "aggregate_credits"}`,
+			{
+				headers: {
+					Authorization: bearer,
+					"Content-Type": "application/json",
+				},
 			},
-		});
+		);
 		const data = (await response.json()) as { cast: ICastMember[] };
 		return data;
 	} catch (error) {

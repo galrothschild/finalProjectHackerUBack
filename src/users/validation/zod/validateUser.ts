@@ -9,7 +9,8 @@ export const validateUserWithZod = (user) => {
 			.regex(
 				/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
 				"At least One Capital, one lowercase and one number",
-			),
+			)
+			.optional(),
 		image: z
 			.string()
 			.url()

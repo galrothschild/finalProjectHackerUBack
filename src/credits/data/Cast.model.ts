@@ -12,6 +12,13 @@ export type ICastMember = {
 	credit_id: string;
 	order: number;
 	job?: string;
+	roles?: role[];
+};
+
+type role = {
+	credit_id: string;
+	character: string;
+	episode_count: number;
 };
 
 export const CastSchema = new mongoose.Schema<ICastMember>({

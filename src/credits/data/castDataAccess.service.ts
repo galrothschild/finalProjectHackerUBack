@@ -1,3 +1,4 @@
+import app from "../../main.js";
 import { castAppearanceModel } from "../../utils/common.model.js";
 import logger from "../../utils/logger/logger.js";
 import { CastModel, type ICastMember } from "./Cast.model.js";
@@ -9,7 +10,11 @@ export const processCredits = async (
 ) => {
 	try {
 		const castMembers = [];
-
+		if (appearedInType === "tvshow") {
+			credits.map((credit) => {
+				credit.character = credit.roles[0].character;
+			});
+		}
 		for (const credit of credits) {
 			const castMember = await processCastMember(credit);
 			castMembers.push(castMember);
