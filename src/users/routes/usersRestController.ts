@@ -20,57 +20,6 @@ import validateUser from "../validation/userValidation.service.js";
 
 const router = Router();
 
-/**
- * @swagger
- * /users/:
- *   post:
- *     summary: Register a new user
- *     tags:
- *       - Users
- *     requestBody:
- *       required: true
- *       example: '{"name": {"first": "John", "middle": "", "last": "Doe"}, "age": 30, "email": "John@email.com", "password": "Password123", "image": "https://via.placeholder.com/150", "username": "JohnDoe"}'
- *       content:
- *         application/json:
- *           schema:
- *            type: object
- *            properties:
- *             username:
- *              type: string
- *              required: true
- *             name:
- *               type: string
- *               required: true
- *             age:
- *               required: true
- *               type: number
- *             email:
- *              required: true
- *              type: string
- *              pattern: ^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$
- *             password:
- *              required: true
- *              type: string
- *              pattern: ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$
- *
- *     responses:
- *       '201':
- *         description: Created
- *         content:
- *           application/json:
- *            schema:
- *             type: object
- *             properties:
- *              name:
- *               type: object
- *               properties:
- *                first: string
- *                last: string
- *                middle: string
- *       '500':
- *         description: Internal Server Error
- *
- */
 router.post("/", async (req, res) => {
 	try {
 		const user = req.body;
@@ -94,58 +43,6 @@ router.post("/", async (req, res) => {
 		return handleError(res, 500, error, "Error creating user");
 	}
 });
-
-/**
- * @swagger
- * /users/login:
- *   post:
- *     summary: Login user
- *     tags:
- *       - Users
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *                 required: true
- *               password:
- *                 type: string
- *                 required: true
- *     responses:
- *       '200':
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *       '400':
- *         description: Bad Request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *       '403':
- *         description: Forbidden
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *       '500':
- *         description: Internal Server Error
- */
 
 router.post("/login", async (req: Request, res: Response) => {
 	try {
@@ -311,4 +208,5 @@ router.post("/logout", async (_req, res) => {
 
 // TODO: add get watched shows, watch listed shows, and same for movies
 
+// export default router /users/...
 export default router;

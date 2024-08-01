@@ -2,7 +2,7 @@
 	"openapi": "3.0.3",
 	"info": {
 		"title": "MyMovies API",
-		"description": "This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [https://swagger.io](https://swagger.io). In the third iteration of the pet store, we've switched to the design first approach!\nYou can now help us improve the API whether it's by making changes to the definition itself or to the code.\nThat way, with time, we can improve the API in general, and expose some of the new features in OAS3.\n\n_If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Petstore OAS 2.0` menu option!_\n\nSome useful links:\n- [The Backend repository](https://github.com/galrothschild/finalProjectHackerUBack)\n- [The Frontend repository](https://github.com/galrothschild/finalProjectFront)",
+		"description": "This is my MyMovies backend documentation\n\nSome useful links:\n- [The Backend repository](https://github.com/galrothschild/finalProjectHackerUBack)\n- [The Frontend repository](https://github.com/galrothschild/finalProjectFront)",
 		"contact": {
 			"email": "gal.rothschildf@gmail.com"
 		},
@@ -15,848 +15,1021 @@
 	],
 	"tags": [
 		{
-			"name": "pet",
-			"description": "Everything about your Pets",
-			"externalDocs": {
-				"description": "Find out more",
-				"url": "http://swagger.io"
-			}
+			"name": "tv",
+			"description": "Everything to do with tv shows"
 		},
 		{
-			"name": "store",
-			"description": "Access to Petstore orders",
-			"externalDocs": {
-				"description": "Find out more about our store",
-				"url": "http://swagger.io"
-			}
+			"name": "movies",
+			"description": "Everything to do with movies"
 		},
 		{
-			"name": "user",
-			"description": "Operations about user"
+			"name": "credits",
+			"description": "Movies and TV Credits and cast"
+		},
+		{
+			"name": "users",
+			"description": "Operations about users"
 		}
 	],
 	"paths": {
-		"/pet": {
-			"put": {
-				"tags": ["pet"],
-				"summary": "Update an existing pet",
-				"description": "Update an existing pet by Id",
-				"operationId": "updatePet",
-				"requestBody": {
-					"description": "Update an existent pet in the store",
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/Pet"
-							}
-						},
-						"application/xml": {
-							"schema": {
-								"$ref": "#/components/schemas/Pet"
-							}
-						},
-						"application/x-www-form-urlencoded": {
-							"schema": {
-								"$ref": "#/components/schemas/Pet"
-							}
-						}
-					},
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"description": "Successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid ID supplied"
-					},
-					"404": {
-						"description": "Pet not found"
-					},
-					"422": {
-						"description": "Validation exception"
-					}
-				},
-				"security": [
-					{
-						"petstore_auth": ["write:pets", "read:pets"]
-					}
-				]
-			},
-			"post": {
-				"tags": ["pet"],
-				"summary": "Add a new pet to the store",
-				"description": "Add a new pet to the store",
-				"operationId": "addPet",
-				"requestBody": {
-					"description": "Create a new pet in the store",
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/Pet"
-							}
-						},
-						"application/xml": {
-							"schema": {
-								"$ref": "#/components/schemas/Pet"
-							}
-						},
-						"application/x-www-form-urlencoded": {
-							"schema": {
-								"$ref": "#/components/schemas/Pet"
-							}
-						}
-					},
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"description": "Successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid input"
-					},
-					"422": {
-						"description": "Validation exception"
-					}
-				},
-				"security": [
-					{
-						"petstore_auth": ["write:pets", "read:pets"]
-					}
-				]
-			}
-		},
-		"/pet/findByStatus": {
+		"/tv": {
 			"get": {
-				"tags": ["pet"],
-				"summary": "Finds Pets by status",
-				"description": "Multiple status values can be provided with comma separated strings",
-				"operationId": "findPetsByStatus",
+				"tags": ["tv"],
+				"summary": "Get TV shows",
+				"description": "Fetch TV shows from TMDB with optional search query.",
 				"parameters": [
 					{
-						"name": "status",
+						"name": "page",
 						"in": "query",
-						"description": "Status values that need to be considered for filter",
 						"required": false,
-						"explode": true,
-						"schema": {
-							"type": "string",
-							"default": "available",
-							"enum": ["available", "pending", "sold"]
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/Pet"
-									}
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/Pet"
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid status value"
-					}
-				},
-				"security": [
-					{
-						"petstore_auth": ["write:pets", "read:pets"]
-					}
-				]
-			}
-		},
-		"/pet/findByTags": {
-			"get": {
-				"tags": ["pet"],
-				"summary": "Finds Pets by tags",
-				"description": "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-				"operationId": "findPetsByTags",
-				"parameters": [
-					{
-						"name": "tags",
-						"in": "query",
-						"description": "Tags to filter by",
-						"required": false,
-						"explode": true,
-						"schema": {
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/Pet"
-									}
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/components/schemas/Pet"
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid tag value"
-					}
-				},
-				"security": [
-					{
-						"petstore_auth": ["write:pets", "read:pets"]
-					}
-				]
-			}
-		},
-		"/pet/{petId}": {
-			"get": {
-				"tags": ["pet"],
-				"summary": "Find pet by ID",
-				"description": "Returns a single pet",
-				"operationId": "getPetById",
-				"parameters": [
-					{
-						"name": "petId",
-						"in": "path",
-						"description": "ID of pet to return",
-						"required": true,
+						"description": "Page number for pagination.",
 						"schema": {
 							"type": "integer",
-							"format": "int64"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/Pet"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid ID supplied"
-					},
-					"404": {
-						"description": "Pet not found"
-					}
-				},
-				"security": [
-					{
-						"api_key": []
-					},
-					{
-						"petstore_auth": ["write:pets", "read:pets"]
-					}
-				]
-			},
-			"post": {
-				"tags": ["pet"],
-				"summary": "Updates a pet in the store with form data",
-				"description": "",
-				"operationId": "updatePetWithForm",
-				"parameters": [
-					{
-						"name": "petId",
-						"in": "path",
-						"description": "ID of pet that needs to be updated",
-						"required": true,
-						"schema": {
-							"type": "integer",
-							"format": "int64"
+							"default": 1
 						}
 					},
 					{
-						"name": "name",
+						"name": "query",
 						"in": "query",
-						"description": "Name of pet that needs to be updated",
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "status",
-						"in": "query",
-						"description": "Status of pet that needs to be updated",
+						"required": false,
+						"description": "Search query string.",
 						"schema": {
 							"type": "string"
 						}
 					}
 				],
 				"responses": {
+					"200": {
+						"description": "Successful response with list of TV shows.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TVShowListResponse"
+								}
+							}
+						}
+					},
 					"400": {
-						"description": "Invalid input"
+						"description": "Invalid page number.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
 					}
-				},
+				}
+			}
+		},
+		"/tv/filter": {
+			"get": {
+				"tags": ["tv"],
+				"summary": "Filter TV shows by genres",
+				"description": "Fetch TV shows from TMDB filtered by genres.",
+				"parameters": [
+					{
+						"name": "genres",
+						"in": "query",
+						"required": true,
+						"description": "Comma-separated list of genre IDs.",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"description": "Page number for pagination.",
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response with list of filtered TV shows.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TVShowListResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid filter or page number.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/tv/genres": {
+			"get": {
+				"tags": ["tv"],
+				"summary": "Get TV genres",
+				"description": "Fetch TV genres from TMDB.",
+				"responses": {
+					"200": {
+						"description": "Successful response with list of genres.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GenreListResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/tv/{id}": {
+			"get": {
+				"tags": ["tv"],
+				"summary": "Get TV show details",
+				"description": "Fetch detailed information of a TV show by ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the TV show.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response with TV show details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TVShowResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid TV show ID.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "TV show not found.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"tags": ["tv"],
+				"summary": "Update user's TV show watchlist",
+				"description": "Add or remove a TV show from the user's watchlist.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the TV show.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
 				"security": [
 					{
-						"petstore_auth": ["write:pets", "read:pets"]
+						"bearerAuth": []
 					}
-				]
+				],
+				"responses": {
+					"200": {
+						"description": "Successfully updated watchlist.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "TV show or user not found.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/tv/{id}/credits": {
+			"get": {
+				"tags": ["tv"],
+				"summary": "Get TV show credits",
+				"description": "Fetch credits information of a TV show by ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the TV show.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response with TV show credits.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CreditsResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid TV show ID.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "TV show not found.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/tv/{id}/watched": {
+			"patch": {
+				"tags": ["tv"],
+				"summary": "Update user's watched TV shows",
+				"description": "Add or remove a TV show from the user's watched list.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the TV show.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successfully updated watched list.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "TV show or user not found.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/movies": {
+			"get": {
+				"tags": ["movies"],
+				"summary": "Get movies",
+				"description": "Fetch movies from TMDB with optional search query.",
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"description": "Page number for pagination.",
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "query",
+						"in": "query",
+						"required": false,
+						"description": "Search query string.",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response with list of movies.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MovieListResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid page number.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/movies/filter": {
+			"get": {
+				"tags": ["movies"],
+				"summary": "Filter movies by genres",
+				"description": "Fetch movies from TMDB filtered by genres.",
+				"parameters": [
+					{
+						"name": "genres",
+						"in": "query",
+						"required": true,
+						"description": "Comma-separated list of genre IDs.",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"description": "Page number for pagination.",
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response with list of filtered movies.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MovieListResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid filter or page number.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/movies/genres": {
+			"get": {
+				"tags": ["movies"],
+				"summary": "Get movie genres",
+				"description": "Fetch movie genres from TMDB.",
+				"responses": {
+					"200": {
+						"description": "Successful response with list of genres.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GenreListResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/movies/{id}": {
+			"get": {
+				"tags": ["movies"],
+				"summary": "Get movie details",
+				"description": "Fetch detailed information of a movie by ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the movie.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response with movie details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MovieResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid movie ID.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Movie not found.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"tags": ["movies"],
+				"summary": "Update user's movie watchlist",
+				"description": "Add or remove a movie from the user's watchlist.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the movie.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successfully updated watchlist.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Movie or user not found.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/movies/{id}/watched": {
+			"patch": {
+				"tags": ["movies"],
+				"summary": "Update user's watched movies",
+				"description": "Add or remove a movie from the user's watched list.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the movie.",
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successfully updated watched list.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Movie or user not found.",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/credits/{id}": {
+			"get": {
+				"tags": ["credits"],
+				"summary": "Get credits by cast member ID",
+				"description": "Retrieves the credits of a cast member by their ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the cast member to retrieve credits for",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Credits found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Credit"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid cast member ID"
+					},
+					"404": {
+						"description": "Cast member not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/users": {
+			"post": {
+				"summary": "Create a new user",
+				"description": "Creates a new user if the email or username doesn't already exist.",
+				"requestBody": {
+					"description": "User object to create",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/User"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "User created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad request, user already exists"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			},
+			"get": {
+				"summary": "Get all users",
+				"description": "Retrieves a list of all users. Accessible only by admins.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "List of users",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/User"
+									}
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden, user is not an admin"
+					},
+					"404": {
+						"description": "No users found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/users/{id}": {
+			"get": {
+				"summary": "Get user by ID",
+				"description": "Retrieves a user by their ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the user to retrieve",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
 			},
 			"delete": {
-				"tags": ["pet"],
-				"summary": "Deletes a pet",
-				"description": "delete a pet",
-				"operationId": "deletePet",
+				"summary": "Delete a user by ID",
+				"description": "Deletes a user by their ID.",
 				"parameters": [
 					{
-						"name": "api_key",
-						"in": "header",
-						"description": "",
-						"required": false,
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the user to delete",
 						"schema": {
 							"type": "string"
-						}
-					},
-					{
-						"name": "petId",
-						"in": "path",
-						"description": "Pet id to delete",
-						"required": true,
-						"schema": {
-							"type": "integer",
-							"format": "int64"
 						}
 					}
 				],
 				"responses": {
-					"400": {
-						"description": "Invalid pet value"
+					"204": {
+						"description": "User deleted successfully"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
-				},
-				"security": [
-					{
-						"petstore_auth": ["write:pets", "read:pets"]
-					}
-				]
-			}
-		},
-		"/pet/{petId}/uploadImage": {
-			"post": {
-				"tags": ["pet"],
-				"summary": "uploads an image",
-				"description": "",
-				"operationId": "uploadFile",
+				}
+			},
+			"put": {
+				"summary": "Update user by ID",
+				"description": "Updates a user by their ID.",
 				"parameters": [
 					{
-						"name": "petId",
+						"name": "id",
 						"in": "path",
-						"description": "ID of pet to update",
 						"required": true,
-						"schema": {
-							"type": "integer",
-							"format": "int64"
-						}
-					},
-					{
-						"name": "additionalMetadata",
-						"in": "query",
-						"description": "Additional Metadata",
-						"required": false,
+						"description": "ID of the user to update",
 						"schema": {
 							"type": "string"
 						}
 					}
 				],
 				"requestBody": {
+					"description": "User object with updated information",
+					"required": true,
 					"content": {
-						"application/octet-stream": {
+						"application/json": {
 							"schema": {
-								"type": "string",
-								"format": "binary"
+								"$ref": "#/components/schemas/User"
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "successful operation",
+						"description": "User updated successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ApiResponse"
+									"$ref": "#/components/schemas/User"
 								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad request, user already exists"
+					},
+					"404": {
+						"description": "User not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/users/login": {
+			"post": {
+				"summary": "User login",
+				"description": "Logs in a user and returns an authentication token.",
+				"requestBody": {
+					"description": "Login credentials",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginUser"
 							}
 						}
 					}
 				},
-				"security": [
-					{
-						"petstore_auth": ["write:pets", "read:pets"]
-					}
-				]
-			}
-		},
-		"/store/inventory": {
-			"get": {
-				"tags": ["store"],
-				"summary": "Returns pet inventories by status",
-				"description": "Returns a map of status codes to quantities",
-				"operationId": "getInventory",
 				"responses": {
 					"200": {
-						"description": "successful operation",
+						"description": "Login successful, returns token",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid credentials"
+					},
+					"403": {
+						"description": "User locked after multiple attempts"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/users/refresh-token": {
+			"post": {
+				"summary": "Refresh authentication token",
+				"description": "Refreshes the authentication token using a valid refresh token.",
+				"responses": {
+					"200": {
+						"description": "Token refreshed successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Invalid refresh token"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/users/logout": {
+			"post": {
+				"summary": "Log out user",
+				"description": "Logs out the user by clearing the refresh token cookie.",
+				"responses": {
+					"200": {
+						"description": "Logged out successfully"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/users/watchlist": {
+			"get": {
+				"summary": "Get user's watchlist",
+				"description": "Retrieves all TV shows and movies in the user's watchlist.",
+				"security": [
+					{
+						"BearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Watchlist retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
-									"additionalProperties": {
-										"type": "integer",
-										"format": "int32"
+									"properties": {
+										"tv": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/TVShow"
+											}
+										},
+										"movies": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Movie"
+											}
+										}
 									}
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"500": {
+						"description": "Internal server error"
 					}
-				},
+				}
+			}
+		},
+		"/users/watchlist/tv-shows": {
+			"get": {
+				"summary": "Get user's watched TV shows",
+				"description": "Retrieves all TV shows in the user's watchlist.",
 				"security": [
 					{
-						"api_key": []
+						"BearerAuth": []
 					}
-				]
-			}
-		},
-		"/store/order": {
-			"post": {
-				"tags": ["store"],
-				"summary": "Place an order for a pet",
-				"description": "Place a new order in the store",
-				"operationId": "placeOrder",
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/Order"
-							}
-						},
-						"application/xml": {
-							"schema": {
-								"$ref": "#/components/schemas/Order"
-							}
-						},
-						"application/x-www-form-urlencoded": {
-							"schema": {
-								"$ref": "#/components/schemas/Order"
-							}
-						}
-					}
-				},
+				],
 				"responses": {
 					"200": {
-						"description": "successful operation",
+						"description": "Watched TV shows retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Order"
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/TVShow"
+									}
 								}
 							}
 						}
 					},
-					"400": {
-						"description": "Invalid input"
+					"401": {
+						"description": "Unauthorized"
 					},
-					"422": {
-						"description": "Validation exception"
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
 		},
-		"/store/order/{orderId}": {
+		"/users/watchlist/movies": {
 			"get": {
-				"tags": ["store"],
-				"summary": "Find purchase order by ID",
-				"description": "For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.",
-				"operationId": "getOrderById",
-				"parameters": [
+				"summary": "Get user's watched movies",
+				"description": "Retrieves all movies in the user's watchlist.",
+				"security": [
 					{
-						"name": "orderId",
-						"in": "path",
-						"description": "ID of order that needs to be fetched",
-						"required": true,
-						"schema": {
-							"type": "integer",
-							"format": "int64"
-						}
+						"BearerAuth": []
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "successful operation",
+						"description": "Watched movies retrieved successfully",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Order"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/Order"
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Movie"
+									}
 								}
 							}
 						}
 					},
-					"400": {
-						"description": "Invalid ID supplied"
+					"401": {
+						"description": "Unauthorized"
 					},
-					"404": {
-						"description": "Order not found"
-					}
-				}
-			},
-			"delete": {
-				"tags": ["store"],
-				"summary": "Delete purchase order by ID",
-				"description": "For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
-				"operationId": "deleteOrder",
-				"parameters": [
-					{
-						"name": "orderId",
-						"in": "path",
-						"description": "ID of the order that needs to be deleted",
-						"required": true,
-						"schema": {
-							"type": "integer",
-							"format": "int64"
-						}
-					}
-				],
-				"responses": {
-					"400": {
-						"description": "Invalid ID supplied"
-					},
-					"404": {
-						"description": "Order not found"
-					}
-				}
-			}
-		},
-		"/user": {
-			"post": {
-				"tags": ["user"],
-				"summary": "Create user",
-				"description": "This can only be done by the logged in user.",
-				"operationId": "createUser",
-				"requestBody": {
-					"description": "Created user object",
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/User"
-							}
-						},
-						"application/xml": {
-							"schema": {
-								"$ref": "#/components/schemas/User"
-							}
-						},
-						"application/x-www-form-urlencoded": {
-							"schema": {
-								"$ref": "#/components/schemas/User"
-							}
-						}
-					}
-				},
-				"responses": {
-					"default": {
-						"description": "successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/User"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/User"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/user/createWithList": {
-			"post": {
-				"tags": ["user"],
-				"summary": "Creates list of users with given input array",
-				"description": "Creates list of users with given input array",
-				"operationId": "createUsersWithListInput",
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "array",
-								"items": {
-									"$ref": "#/components/schemas/User"
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/User"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/User"
-								}
-							}
-						}
-					},
-					"default": {
-						"description": "successful operation"
-					}
-				}
-			}
-		},
-		"/user/login": {
-			"get": {
-				"tags": ["user"],
-				"summary": "Logs user into the system",
-				"description": "",
-				"operationId": "loginUser",
-				"parameters": [
-					{
-						"name": "username",
-						"in": "query",
-						"description": "The user name for login",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "password",
-						"in": "query",
-						"description": "The password for login in clear text",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "successful operation",
-						"headers": {
-							"X-Rate-Limit": {
-								"description": "calls per hour allowed by the user",
-								"schema": {
-									"type": "integer",
-									"format": "int32"
-								}
-							},
-							"X-Expires-After": {
-								"description": "date in UTC when token expires",
-								"schema": {
-									"type": "string",
-									"format": "date-time"
-								}
-							}
-						},
-						"content": {
-							"application/xml": {
-								"schema": {
-									"type": "string"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid username/password supplied"
-					}
-				}
-			}
-		},
-		"/user/logout": {
-			"get": {
-				"tags": ["user"],
-				"summary": "Logs out current logged in user session",
-				"description": "",
-				"operationId": "logoutUser",
-				"parameters": [],
-				"responses": {
-					"default": {
-						"description": "successful operation"
-					}
-				}
-			}
-		},
-		"/user/{username}": {
-			"get": {
-				"tags": ["user"],
-				"summary": "Get user by user name",
-				"description": "",
-				"operationId": "getUserByName",
-				"parameters": [
-					{
-						"name": "username",
-						"in": "path",
-						"description": "The name that needs to be fetched. Use user1 for testing. ",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "successful operation",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/User"
-								}
-							},
-							"application/xml": {
-								"schema": {
-									"$ref": "#/components/schemas/User"
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Invalid username supplied"
-					},
-					"404": {
-						"description": "User not found"
-					}
-				}
-			},
-			"put": {
-				"tags": ["user"],
-				"summary": "Update user",
-				"description": "This can only be done by the logged in user.",
-				"operationId": "updateUser",
-				"parameters": [
-					{
-						"name": "username",
-						"in": "path",
-						"description": "name that need to be deleted",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"description": "Update an existent user in the store",
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/User"
-							}
-						},
-						"application/xml": {
-							"schema": {
-								"$ref": "#/components/schemas/User"
-							}
-						},
-						"application/x-www-form-urlencoded": {
-							"schema": {
-								"$ref": "#/components/schemas/User"
-							}
-						}
-					}
-				},
-				"responses": {
-					"default": {
-						"description": "successful operation"
-					}
-				}
-			},
-			"delete": {
-				"tags": ["user"],
-				"summary": "Delete user",
-				"description": "This can only be done by the logged in user.",
-				"operationId": "deleteUser",
-				"parameters": [
-					{
-						"name": "username",
-						"in": "path",
-						"description": "The name that needs to be deleted",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"400": {
-						"description": "Invalid username supplied"
-					},
-					"404": {
-						"description": "User not found"
+					"500": {
+						"description": "Internal server error"
 					}
 				}
 			}
@@ -864,281 +1037,513 @@
 	},
 	"components": {
 		"schemas": {
-			"Order": {
+			"Genre": {
 				"type": "object",
 				"properties": {
 					"id": {
-						"type": "integer",
-						"format": "int64",
-						"example": 10
-					},
-					"petId": {
-						"type": "integer",
-						"format": "int64",
-						"example": 198772
-					},
-					"quantity": {
-						"type": "integer",
-						"format": "int32",
-						"example": 7
-					},
-					"shipDate": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"status": {
-						"type": "string",
-						"description": "Order Status",
-						"example": "approved",
-						"enum": ["placed", "approved", "delivered"]
-					},
-					"complete": {
-						"type": "boolean"
-					}
-				},
-				"xml": {
-					"name": "order"
-				}
-			},
-			"Customer": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "integer",
-						"format": "int64",
-						"example": 100000
-					},
-					"username": {
-						"type": "string",
-						"example": "fehguy"
-					},
-					"address": {
-						"type": "array",
-						"xml": {
-							"name": "addresses",
-							"wrapped": true
-						},
-						"items": {
-							"$ref": "#/components/schemas/Address"
-						}
-					}
-				},
-				"xml": {
-					"name": "customer"
-				}
-			},
-			"Address": {
-				"type": "object",
-				"properties": {
-					"street": {
-						"type": "string",
-						"example": "437 Lytton"
-					},
-					"city": {
-						"type": "string",
-						"example": "Palo Alto"
-					},
-					"state": {
-						"type": "string",
-						"example": "CA"
-					},
-					"zip": {
-						"type": "string",
-						"example": "94301"
-					}
-				},
-				"xml": {
-					"name": "address"
-				}
-			},
-			"Category": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "integer",
-						"format": "int64",
-						"example": 1
+						"type": "integer"
 					},
 					"name": {
-						"type": "string",
-						"example": "Dogs"
+						"type": "string"
 					}
-				},
-				"xml": {
-					"name": "category"
+				}
+			},
+			"ProductionCompany": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"logo_path": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"origin_country": {
+						"type": "string"
+					}
+				}
+			},
+			"ProductionCountry": {
+				"type": "object",
+				"properties": {
+					"iso_3166_1": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				}
+			},
+			"SpokenLanguage": {
+				"type": "object",
+				"properties": {
+					"english_name": {
+						"type": "string"
+					},
+					"iso_639_1": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				}
+			},
+			"Episode": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"name": {
+						"type": "string"
+					},
+					"overview": {
+						"type": "string"
+					},
+					"vote_average": {
+						"type": "number"
+					},
+					"vote_count": {
+						"type": "integer"
+					},
+					"air_date": {
+						"type": "string"
+					},
+					"episode_number": {
+						"type": "integer"
+					},
+					"episode_type": {
+						"type": "string"
+					},
+					"production_code": {
+						"type": "string"
+					},
+					"season_number": {
+						"type": "integer"
+					},
+					"show_id": {
+						"type": "integer"
+					}
+				}
+			},
+			"LastEpisodeToAir": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"name": {
+						"type": "string"
+					},
+					"overview": {
+						"type": "string"
+					},
+					"vote_average": {
+						"type": "number"
+					},
+					"vote_count": {
+						"type": "integer"
+					},
+					"air_date": {
+						"type": "string"
+					},
+					"episode_number": {
+						"type": "integer"
+					},
+					"episode_type": {
+						"type": "string"
+					},
+					"production_code": {
+						"type": "string"
+					},
+					"runtime": {
+						"type": "integer"
+					},
+					"season_number": {
+						"type": "integer"
+					},
+					"show_id": {
+						"type": "integer"
+					},
+					"still_path": {
+						"type": "string"
+					}
+				}
+			},
+			"Network": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "integer"
+					},
+					"logo_path": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"origin_country": {
+						"type": "string"
+					}
+				}
+			},
+			"Season": {
+				"type": "object",
+				"properties": {
+					"air_date": {
+						"type": "string"
+					},
+					"episode_count": {
+						"type": "integer"
+					},
+					"id": {
+						"type": "integer"
+					},
+					"name": {
+						"type": "string"
+					},
+					"overview": {
+						"type": "string"
+					},
+					"poster_path": {
+						"type": "string"
+					},
+					"season_number": {
+						"type": "integer"
+					},
+					"vote_average": {
+						"type": "number"
+					}
+				}
+			},
+			"TVShow": {
+				"type": "object",
+				"properties": {
+					"backdrop_path": {
+						"type": "string"
+					},
+					"first_air_date": {
+						"type": "string"
+					},
+					"genres": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Genre"
+						}
+					},
+					"id": {
+						"type": "integer"
+					},
+					"in_production": {
+						"type": "boolean"
+					},
+					"last_air_date": {
+						"type": "string"
+					},
+					"last_episode_to_air": {
+						"$ref": "#/components/schemas/LastEpisodeToAir"
+					},
+					"next_episode_to_air": {
+						"$ref": "#/components/schemas/Episode"
+					},
+					"networks": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Network"
+						}
+					},
+					"number_of_episodes": {
+						"type": "integer"
+					},
+					"number_of_seasons": {
+						"type": "integer"
+					},
+					"origin_country": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"original_name": {
+						"type": "string"
+					},
+					"overview": {
+						"type": "string"
+					},
+					"popularity": {
+						"type": "number"
+					},
+					"poster_path": {
+						"type": "string"
+					},
+					"production_companies": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ProductionCompany"
+						}
+					},
+					"seasons": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Season"
+						}
+					},
+					"status": {
+						"type": "string"
+					},
+					"tagline": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"cast": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/CastMember"
+						}
+					}
+				}
+			},
+			"CastMember": {
+				"type": "object",
+				"properties": {
+					"gender": {
+						"type": "integer"
+					},
+					"id": {
+						"type": "integer"
+					},
+					"known_for_department": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"original_name": {
+						"type": "string"
+					},
+					"profile_path": {
+						"type": "string"
+					},
+					"character": {
+						"type": "string"
+					},
+					"credit_id": {
+						"type": "string"
+					},
+					"order": {
+						"type": "integer"
+					},
+					"job": {
+						"type": "string"
+					},
+					"roles": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"credit_id": {
+									"type": "string"
+								},
+								"character": {
+									"type": "string"
+								},
+								"episode_count": {
+									"type": "integer"
+								}
+							}
+						}
+					}
+				}
+			},
+			"Movie": {
+				"type": "object",
+				"properties": {
+					"adult": {
+						"type": "boolean"
+					},
+					"backdrop_path": {
+						"type": "string"
+					},
+					"budget": {
+						"type": "integer"
+					},
+					"genres": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Genre"
+						}
+					},
+					"homepage": {
+						"type": "string"
+					},
+					"id": {
+						"type": "integer"
+					},
+					"imdb_id": {
+						"type": "string"
+					},
+					"origin_country": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					},
+					"original_language": {
+						"type": "string"
+					},
+					"original_title": {
+						"type": "string"
+					},
+					"overview": {
+						"type": "string"
+					},
+					"popularity": {
+						"type": "number"
+					},
+					"poster_path": {
+						"type": "string"
+					},
+					"production_companies": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ProductionCompany"
+						}
+					},
+					"production_countries": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/ProductionCountry"
+						}
+					},
+					"release_date": {
+						"type": "string"
+					},
+					"revenue": {
+						"type": "number"
+					},
+					"runtime": {
+						"type": "number"
+					},
+					"spoken_languages": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/SpokenLanguage"
+						}
+					},
+					"status": {
+						"type": "string"
+					},
+					"tagline": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"video": {
+						"type": "boolean"
+					},
+					"vote_average": {
+						"type": "number"
+					},
+					"vote_count": {
+						"type": "integer"
+					}
 				}
 			},
 			"User": {
 				"type": "object",
 				"properties": {
-					"id": {
-						"type": "integer",
-						"format": "int64",
-						"example": 10
-					},
 					"username": {
-						"type": "string",
-						"example": "theUser"
-					},
-					"firstName": {
-						"type": "string",
-						"example": "John"
-					},
-					"lastName": {
-						"type": "string",
-						"example": "James"
+						"type": "string"
 					},
 					"email": {
-						"type": "string",
-						"example": "john@email.com"
+						"type": "string"
 					},
 					"password": {
-						"type": "string",
-						"example": "12345"
-					},
-					"phone": {
-						"type": "string",
-						"example": "12345"
-					},
-					"userStatus": {
-						"type": "integer",
-						"description": "User Status",
-						"format": "int32",
-						"example": 1
-					}
-				},
-				"xml": {
-					"name": "user"
-				}
-			},
-			"Tag": {
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "integer",
-						"format": "int64"
-					},
-					"name": {
 						"type": "string"
-					}
-				},
-				"xml": {
-					"name": "tag"
-				}
-			},
-			"Pet": {
-				"required": ["name", "photoUrls"],
-				"type": "object",
-				"properties": {
-					"id": {
-						"type": "integer",
-						"format": "int64",
-						"example": 10
+					},
+					"image": {
+						"type": "string"
 					},
 					"name": {
-						"type": "string",
-						"example": "doggie"
-					},
-					"category": {
-						"$ref": "#/components/schemas/Category"
-					},
-					"photoUrls": {
-						"type": "array",
-						"xml": {
-							"wrapped": true
-						},
-						"items": {
-							"type": "string",
-							"xml": {
-								"name": "photoUrl"
+						"type": "object",
+						"properties": {
+							"first": {
+								"type": "string"
+							},
+							"last": {
+								"type": "string"
+							},
+							"middle": {
+								"type": "string"
 							}
 						}
 					},
-					"tags": {
+					"isAdmin": {
+						"type": "boolean"
+					},
+					"watchList": {
 						"type": "array",
-						"xml": {
-							"wrapped": true
-						},
 						"items": {
-							"$ref": "#/components/schemas/Tag"
-						}
-					},
-					"status": {
-						"type": "string",
-						"description": "pet status in the store",
-						"enum": ["available", "pending", "sold"]
-					}
-				},
-				"xml": {
-					"name": "pet"
-				}
-			},
-			"ApiResponse": {
-				"type": "object",
-				"properties": {
-					"code": {
-						"type": "integer",
-						"format": "int32"
-					},
-					"type": {
-						"type": "string"
-					},
-					"message": {
-						"type": "string"
-					}
-				},
-				"xml": {
-					"name": "##default"
-				}
-			}
-		},
-		"requestBodies": {
-			"Pet": {
-				"description": "Pet object that needs to be added to the store",
-				"content": {
-					"application/json": {
-						"schema": {
-							"$ref": "#/components/schemas/Pet"
-						}
-					},
-					"application/xml": {
-						"schema": {
-							"$ref": "#/components/schemas/Pet"
-						}
-					}
-				}
-			},
-			"UserArray": {
-				"description": "List of user object",
-				"content": {
-					"application/json": {
-						"schema": {
-							"type": "array",
-							"items": {
-								"$ref": "#/components/schemas/User"
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": ["tv show", "movie"]
+								},
+								"id": {
+									"type": "string"
+								},
+								"watched": {
+									"type": "boolean"
+								}
 							}
 						}
+					}
+				}
+			},
+			"LoginUser": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				}
+			},
+			"CastAppearance": {
+				"type": "object",
+				"properties": {
+					"role": {
+						"type": "string"
+					},
+					"castMemberID": {
+						"type": "string"
+					},
+					"appearedIn": {
+						"type": "string"
+					},
+					"appearedInType": {
+						"type": "string",
+						"enum": ["movie", "tvshow"]
+					},
+					"credit_id": {
+						"type": "string"
 					}
 				}
 			}
 		},
 		"securitySchemes": {
-			"petstore_auth": {
-				"type": "oauth2",
-				"flows": {
-					"implicit": {
-						"authorizationUrl": "https://petstore3.swagger.io/oauth/authorize",
-						"scopes": {
-							"write:pets": "modify pets in your account",
-							"read:pets": "read your pets"
-						}
-					}
-				}
-			},
-			"api_key": {
-				"type": "apiKey",
-				"name": "api_key",
-				"in": "header"
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
 			}
 		}
 	}

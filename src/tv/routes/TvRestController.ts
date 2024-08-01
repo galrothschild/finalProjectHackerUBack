@@ -15,24 +15,6 @@ import { getUser } from "../../users/data/usersDataAccess.service.js";
 
 const router = Router();
 
-/**
- * @openapi
- * /tv:
- *   get:
- *     description: Will get a list of tv shows
- *     parameters:
- *      - name: page
- *        in: query
- *        description: optional page number, if it doesn't exist it will default to 1
- *        schema:
- *          type: number
- *     responses:
- *        200:
- *          description: Returns a list of tv shows.
- *        400:
- *          description: Invalid Page number
- *
- */
 router.get("/", async (req, res, next) => {
 	try {
 		const pageNumber = req.query.page || 1;
@@ -54,35 +36,6 @@ router.get("/", async (req, res, next) => {
 		return next(error);
 	}
 });
-
-/**
- * @openapi
- * /shows/filter:
- *   get:
- *     description: Will get a list of shows by genre
- *     parameters:
- *      - name: genres
- *        in: query
- *        description: genres
- *        required: true
- *        schema:
- *         type: string
- *         pattern: '^[0-9]+(?:,[0-9]+)*$'
- *         example: 28,12
- *      - name: page
- *        in: query
- *        description: optional page number, if it doesn't exist it will default to 1
- *        schema:
- *         type: number
- *         example: 1
- *         required: false
- *     responses:
- *        200:
- *          description: Returns a list of shows.
- *        400:
- *          description: Invalid filter
- *
- */
 
 router.get("/filter", async (req, res, next) => {
 	try {
@@ -108,18 +61,6 @@ router.get("/filter", async (req, res, next) => {
 	}
 });
 
-/**
- * @openapi
- * /movies/genres:
- *   get:
- *     description: Will get a list of movie genres
- *     responses:
- *        200:
- *          description: Returns a list of genres.
- *
- *
- */
-
 router.get("/genres", async (_req, res, next) => {
 	try {
 		const genres = await getGenresFromTMDB("tv");
@@ -129,26 +70,6 @@ router.get("/genres", async (_req, res, next) => {
 	}
 });
 
-/**
- * @openapi
- * /tv/{id}:
- *   get:
- *     description: Will get a tv show by ID
- *     parameters:
- *      - name: id
- *        in: path
- *        description: id
- *        schema:
- *          type: number
- *     responses:
- *        200:
- *          description: Returns details about a tv show.
- *        400:
- *          description: Invalid tv show ID
- *        404:
- *          description: Tv show not found
- *
- */
 router.get("/:id", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
@@ -238,4 +159,6 @@ router.patch(
 		}
 	},
 );
+
+// export the router /tv/...
 export default router;
