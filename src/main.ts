@@ -8,9 +8,10 @@ import cors from "cors";
 import { swaggerDocs } from "./swagger.config.js";
 import cookieParser from "cookie-parser";
 import logger from "./utils/logger/logger.js";
-import dotenv from "dotenv";
+import { config } from "dotenv";
+import { loadInitialData } from "./initialData/initialData.js";
 
-dotenv.config();
+config();
 
 const app = express();
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
@@ -38,6 +39,7 @@ app.listen(port, async () => {
 	logger.info(`Server is running on http://localhost:${port}`.green.bold);
 	try {
 		await connectDB();
+		await loadInitialData();
 		swaggerDocs(app, port);
 	} catch (error) {
 		logger.error(`Error connecting to DB: ${error}`);

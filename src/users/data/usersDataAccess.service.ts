@@ -9,7 +9,9 @@ import bcrypt from "bcrypt";
 export const createUser = async (user: IUser) => {
 	try {
 		const newUser = new UserModel(user);
-		return await newUser.save();
+		const savedUser = await newUser.save();
+		const { password, ...userWithoutPassword } = savedUser.toObject();
+		return userWithoutPassword;
 	} catch (error) {
 		return Promise.reject(error);
 	}

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import { watch } from "node:fs";
 
 export type IUser = {
 	username: string;

@@ -47,6 +47,7 @@ router.post("/", async (req, res) => {
 router.post("/login", async (req: Request, res: Response) => {
 	try {
 		const user: loginUserType = req.body;
+		user.username = user.username.toLowerCase();
 		const userExistsEmail = await doesUserExist(user.username, "email");
 		const userExistsUsername = await doesUserExist(user.username, "username");
 		if (!userExistsUsername && !userExistsEmail) {
