@@ -34,7 +34,7 @@ export const saveMovie = async (id: string) => {
 			return true;
 		}
 		const movieFromTMDB = await getMovieFromTMDB(id);
-		if (!movieFromTMDB) {
+		if (!movieFromTMDB || !movieFromTMDB.id || !movieFromTMDB.title) {
 			return null;
 		}
 		if (movieFromTMDB.status_code === 34) {

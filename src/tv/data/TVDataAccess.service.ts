@@ -33,7 +33,7 @@ export const saveTVShow = async (id: string) => {
 			return true;
 		}
 		const tvShowFromTMDB = await getTVShowFromTMDB(id);
-		if (!tvShowFromTMDB) {
+		if (!tvShowFromTMDB || !tvShowFromTMDB.id || !tvShowFromTMDB.name) {
 			return null;
 		}
 		if (tvShowFromTMDB.status_code === 34) {
