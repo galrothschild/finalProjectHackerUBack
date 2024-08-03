@@ -115,9 +115,9 @@ export const getCastMember = async (id) => {
 		const castAppearancesFromTMDB = await getCreditsByCastMemberFromTMDB(id);
 		for (const credit of castAppearancesFromTMDB) {
 			if (credit.media_type === "tv") {
-				saveTVShow(credit.id);
+				await saveTVShow(credit.id);
 			} else if (credit.media_type === "movie") {
-				saveMovie(credit.id);
+				await saveMovie(credit.id);
 			}
 		}
 		const castMember = await CastModel.findOne({ id }).lean();
