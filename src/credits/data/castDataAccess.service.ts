@@ -1,4 +1,7 @@
 import app from "../../main.js";
+import { saveMovie } from "../../movies/data/movieDataAccess.service.js";
+import { getCreditsByCastMemberFromTMDB } from "../../tmdb/tmdb.api.service.js";
+import { saveTVShow } from "../../tv/data/TVDataAccess.service.js";
 import { castAppearanceModel } from "../../utils/common.model.js";
 import logger from "../../utils/logger/logger.js";
 import { CastModel, type ICastMember } from "./Cast.model.js";
@@ -104,6 +107,14 @@ export const getCreditsByCastMemberId = async (castMemberID) => {
 
 export const getCastMember = async (id) => {
 	try {
+		const castAppearancesFromTMDB = await getCreditsByCastMemberFromTMDB(id);
+		for (const credit of castAppearancesFromTMDB) {
+			if (credit.media_type === "tv") {
+				saveTVShow(credit.id);
+			} else if (credit.media_type === "movie") {
+				saveMovie(credit.id);
+			}
+		}
 		const castMember = await CastModel.findOne({ id }).lean();
 		return castMember;
 	} catch (error) {

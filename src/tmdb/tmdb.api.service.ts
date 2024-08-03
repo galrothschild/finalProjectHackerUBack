@@ -143,3 +143,19 @@ export const getCreditsFromTMDB = async (id, api: "movie" | "tv") => {
 		return null;
 	}
 };
+
+export const getCreditsByCastMemberFromTMDB = async (id: string) => {
+	try {
+		const response = await fetch(`${API_URL}/person/${id}/combined_credits`, {
+			headers: {
+				Authorization: bearer,
+				"Content-Type": "application/json",
+			},
+		});
+		const data = (await response.json()) as { cast };
+		return data.cast;
+	} catch (error) {
+		console.log(error.red);
+		return null;
+	}
+};

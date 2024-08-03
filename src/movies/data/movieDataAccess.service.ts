@@ -17,6 +17,22 @@ export const getMovie = async (id: string): Promise<IMovieDocument> => {
 		if (movie) {
 			return movie;
 		}
+		const newMovie = await saveMovie(id);
+		if (!newMovie) {
+			return null;
+		}
+		return await MovieModel.findOne({ id }).lean();
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+export const saveMovie = async (id: string) => {
+	try {
+		const movie = await MovieModel.findOne({ id });
+		if (movie) {
+			return true;
+		}
 		const movieFromTMDB = await getMovieFromTMDB(id);
 		if (!movieFromTMDB) {
 			return null;
@@ -28,7 +44,8 @@ export const getMovie = async (id: string): Promise<IMovieDocument> => {
 		const normalizedMovie = normalizeMovie(movieFromTMDB);
 		const newMovie = new MovieModel(normalizedMovie);
 		processCredits(cast, "movie", newMovie._id);
-		return await newMovie.save();
+		await newMovie.save();
+		return true;
 	} catch (error) {
 		return Promise.reject(error);
 	}

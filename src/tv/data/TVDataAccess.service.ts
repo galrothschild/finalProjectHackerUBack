@@ -17,6 +17,21 @@ export const getTVShow = async (id: string): Promise<ITVShowDocument> => {
 		if (tvShow) {
 			return tvShow;
 		}
+		const newTVShow = await saveTVShow(id);
+		if (!newTVShow) {
+			return null;
+		}
+		return await TVShowModel.findOne({ id }).lean();
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+export const saveTVShow = async (id: string) => {
+	try {
+		const tvShow = await TVShowModel.findOne({ id });
+		if (tvShow) {
+			return true;
+		}
 		const tvShowFromTMDB = await getTVShowFromTMDB(id);
 		if (!tvShowFromTMDB) {
 			return null;
@@ -28,7 +43,8 @@ export const getTVShow = async (id: string): Promise<ITVShowDocument> => {
 		const normalizedTVShow = normalizeTVShow(tvShowFromTMDB);
 		const newTVShow = new TVShowModel(normalizedTVShow);
 		processCredits(cast, "tvshow", newTVShow._id);
-		return await newTVShow.save();
+		await newTVShow.save();
+		return true;
 	} catch (error) {
 		return Promise.reject(error);
 	}
