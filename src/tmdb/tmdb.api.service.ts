@@ -1,4 +1,5 @@
 import type { ICastMember } from "../credits/data/Cast.model.js";
+import logger from "../utils/logger/logger.js";
 
 const API_URL = process.env.TMDB_API_URL || "https://api.themoviedb.org/3";
 
@@ -22,7 +23,7 @@ export const getFromTMDB = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.log(error.red);
+		logger.error(error.red);
 		return null;
 	}
 };
@@ -40,7 +41,7 @@ export const getGenresFromTMDB = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.log(error.red);
+		logger.error(error.red);
 		return null;
 	}
 };
@@ -64,7 +65,7 @@ export const getFilteredFromTMDB = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.log(error.toString().red);
+		logger.error(error.toString().red);
 		return null;
 	}
 };
@@ -80,7 +81,7 @@ export const getMovieFromTMDB = async (id: string): Promise<any> => {
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.log(error.red);
+		logger.error(error.red);
 		return null;
 	}
 };
@@ -103,7 +104,7 @@ export const getTVShowsFromTMDB = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.log(error.red);
+		logger.error(error.red);
 		return null;
 	}
 };
@@ -120,7 +121,7 @@ export const getTVShowFromTMDB = async (id: string): Promise<any> => {
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.log(error.red);
+		logger.error(error.red);
 		return null;
 	}
 };
@@ -139,7 +140,7 @@ export const getCreditsFromTMDB = async (id, api: "movie" | "tv") => {
 		const data = (await response.json()) as { cast: ICastMember[] };
 		return data;
 	} catch (error) {
-		console.log(error.red);
+		logger.error(error.red);
 		return null;
 	}
 };
@@ -155,7 +156,7 @@ export const getCreditsByCastMemberFromTMDB = async (id: string) => {
 		const data = (await response.json()) as { cast };
 		return data.cast;
 	} catch (error) {
-		console.log(error.red);
+		logger.error(error.red);
 		return null;
 	}
 };

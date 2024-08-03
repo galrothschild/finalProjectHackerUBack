@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
 		const createdUser = await createUser(normalizedUser);
 		return res.status(201).send(createdUser);
 	} catch (error) {
-		console.log(error);
+		logger.error(error);
 		return handleError(res, 500, error, "Error creating user");
 	}
 });
