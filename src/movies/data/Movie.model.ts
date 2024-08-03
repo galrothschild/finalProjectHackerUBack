@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CastSchema, type ICastMember } from "../../credits/data/Cast.model.js";
+import type { ICastMember } from "../../credits/data/Cast.model.js";
 
 export interface IMovie {
 	adult: boolean;

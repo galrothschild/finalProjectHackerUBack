@@ -5,7 +5,6 @@ import "colors";
 import { connectDB } from "./db/db.service.js";
 import { handleError } from "./utils/handleError.js";
 import cors from "cors";
-import { swaggerDocs } from "./swagger.config.js";
 import cookieParser from "cookie-parser";
 import logger from "./utils/logger/logger.js";
 import { config } from "dotenv";
@@ -40,7 +39,6 @@ app.listen(port, async () => {
 	try {
 		await connectDB();
 		await loadInitialData();
-		swaggerDocs(app, port);
 	} catch (error) {
 		logger.error(`Error connecting to DB: ${error}`);
 	}
