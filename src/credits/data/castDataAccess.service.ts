@@ -12,12 +12,16 @@ export const processCredits = async (
 	appearedInID,
 ) => {
 	try {
+		if (!Array.isArray(credits) || credits.length === 0) {
+			return false;
+		}
 		const castMembers = [];
 		if (appearedInType === "tvshow") {
 			credits.map((credit) => {
 				credit.character = credit.roles[0].character;
 			});
 		}
+
 		for (const credit of credits) {
 			const castMember = await processCastMember(credit);
 			castMembers.push(castMember);
@@ -97,6 +101,7 @@ export const getCreditsByCastMemberId = async (castMemberID) => {
 			return {
 				...castAppearance.toObject().appearedIn,
 				role: castAppearance.role,
+				type: castAppearance.appearedInType,
 			};
 		});
 	} catch (error) {
