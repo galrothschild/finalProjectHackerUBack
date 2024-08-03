@@ -14,6 +14,7 @@ import { getUser } from "../../users/data/usersDataAccess.service.js";
 
 const router = Router();
 
+// get a page of movies
 router.get("/", async (req, res, next) => {
 	try {
 		const pageNumber = req.query.page || 1;
@@ -35,6 +36,7 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
+// get a page of movies filtered by genre
 router.get("/filter", async (req, res, next) => {
 	try {
 		const filter = req.query.genres.toString();
@@ -59,6 +61,7 @@ router.get("/filter", async (req, res, next) => {
 	}
 });
 
+// get all genres
 router.get("/genres", async (_req, res, next) => {
 	try {
 		const genres = await getGenresFromTMDB("movie");
@@ -68,6 +71,7 @@ router.get("/genres", async (_req, res, next) => {
 	}
 });
 
+// get a movie by id
 router.get("/:id", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
@@ -83,6 +87,7 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
+// get a movie's credits by id
 router.get("/:id/credits", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
@@ -102,6 +107,7 @@ router.get("/:id/credits", async (req, res, next) => {
 	}
 });
 
+// add or remove a movie from a user's watchlist
 router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
 	const userId = req.user?._id;
 	const movieId = req.params.id;
@@ -130,6 +136,7 @@ router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
 	}
 });
 
+// add or remove a movie from a user's watched list
 router.patch(
 	"/:id/watched",
 	auth,

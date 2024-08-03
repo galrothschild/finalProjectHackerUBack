@@ -132,9 +132,13 @@ router.get("/", auth, async (req: AuthenticatedRequest, res) => {
 });
 
 // get user by id
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req: AuthenticatedRequest, res) => {
 	try {
+		const currentUser = req.user;
 		const id = req.params.id;
+		if (!currentUser.isAdmin && currentUser._id !== id) {
+			return res.status(403).send("You are not allowed to view this user");
+		}
 		const foundUser = await getUser(id);
 		if (!foundUser) {
 			return res.status(404).send("User not found");
@@ -145,9 +149,21 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-router.delete("/:id", async (req, res) => {
+// delete user by id
+router.delete("/:id", auth, async (req: AuthenticatedRequest, res) => {
+	const currentUser = req.user;
 	try {
 		const user = req.params.id;
+		if (!currentUser.isAdmin && currentUser._id !== user) {
+			return res.status(403).send("You are not allowed to delete this user");
+		}
+		const userData = await getUser(user);
+		if (!userData) {
+			return res.status(404).send("User not found");
+		}
+		if (userData.isAdmin) {
+			return res.status(403).send("Not allowed to delete an admin user.");
+		}
 		await deleteUser(user);
 		return res.status(204).send();
 	} catch (error) {
@@ -155,6 +171,7 @@ router.delete("/:id", async (req, res) => {
 	}
 });
 
+// update user by id
 router.put("/:id", async (req, res) => {
 	try {
 		const id = req.params.id;
@@ -184,6 +201,7 @@ router.put("/:id", async (req, res) => {
 	}
 });
 
+// refresh access token
 router.post("/refresh-token", async (req, res) => {
 	try {
 		const refreshToken = req.cookies.refreshToken;
@@ -198,6 +216,7 @@ router.post("/refresh-token", async (req, res) => {
 	}
 });
 
+// logout
 router.post("/logout", async (_req, res) => {
 	try {
 		res.clearCookie("refreshToken");
@@ -206,8 +225,6 @@ router.post("/logout", async (_req, res) => {
 		return handleError(res, 500, error, "Error logging out");
 	}
 });
-
-// TODO: add get watched shows, watch listed shows, and same for movies
 
 // export default router /users/...
 export default router;

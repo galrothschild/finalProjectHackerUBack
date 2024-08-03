@@ -39,20 +39,26 @@ export const patchUsersMovies = async (
 	movieId: string,
 	watched: boolean,
 ) => {
-	const userID = user._id as string;
+	const userID = user._id.toString();
 	const index = user.watchList.findIndex(
 		(watchListEntry) =>
 			watchListEntry.id === movieId && watchListEntry.type === "movie",
 	);
 	let added = false;
+
 	if (index === -1) {
+		// Movie not in watchList, add it
 		user.watchList.push({ id: movieId, type: "movie", watched });
 		added = true;
 	} else if (user.watchList[index].watched === watched) {
+		// If the status is already the same, remove the entry
 		user.watchList.splice(index, 1);
 	} else {
+		// Update the watched status
 		user.watchList[index].watched = watched;
 	}
+
+	// Save the user object to the database
 	await updateUser(userID, user);
 	return added;
 };

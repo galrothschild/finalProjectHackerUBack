@@ -14,7 +14,7 @@ import { auth, type AuthenticatedRequest } from "../../auth/auth.service.js";
 import { getUser } from "../../users/data/usersDataAccess.service.js";
 
 const router = Router();
-
+// get a page of tv shows
 router.get("/", async (req, res, next) => {
 	try {
 		const pageNumber = req.query.page || 1;
@@ -37,6 +37,7 @@ router.get("/", async (req, res, next) => {
 	}
 });
 
+// get a page of tv shows filtered by genre
 router.get("/filter", async (req, res, next) => {
 	try {
 		const filter = req.query.genres.toString();
@@ -61,6 +62,7 @@ router.get("/filter", async (req, res, next) => {
 	}
 });
 
+// get all genres
 router.get("/genres", async (_req, res, next) => {
 	try {
 		const genres = await getGenresFromTMDB("tv");
@@ -70,6 +72,7 @@ router.get("/genres", async (_req, res, next) => {
 	}
 });
 
+// get a tv show by id
 router.get("/:id", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
@@ -85,6 +88,7 @@ router.get("/:id", async (req, res, next) => {
 	}
 });
 
+// get a tv show credits by id
 router.get("/:id/credits", async (req, res, next) => {
 	try {
 		if (!req.params.id || Number.isNaN(+req.params.id) || +req.params.id < 1) {
@@ -104,6 +108,7 @@ router.get("/:id/credits", async (req, res, next) => {
 	}
 });
 
+// add a tv show to the user's watchlist
 router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
 	const userId = req.user?._id;
 	const showId = req.params.id;
@@ -128,6 +133,7 @@ router.patch("/:id", auth, async (req: AuthenticatedRequest, res, next) => {
 	}
 });
 
+// add a tv show to the user's watched list
 router.patch(
 	"/:id/watched",
 	auth,
