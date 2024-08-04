@@ -172,10 +172,18 @@ router.delete("/:id", auth, async (req: AuthenticatedRequest, res) => {
 });
 
 // update user by id
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req: AuthenticatedRequest, res) => {
 	try {
 		const id = req.params.id;
+		const currentUser = req.user;
 		const user = req.body;
+		const userExistsID = await getUser(id);
+		if (!userExistsID) {
+			return res.status(404).send("User not found");
+		}
+		if (!currentUser.isAdmin && currentUser._id !== id) {
+			return res.status(403).send("You are not allowed to update this user");
+		}
 		const userExistsEmail = await doesUserExist(user.email, "email");
 		if (userExistsEmail && userExistsEmail._id.toString() !== id) {
 			return res
@@ -189,6 +197,7 @@ router.put("/:id", async (req, res) => {
 				.status(400)
 				.send("User already exists with this email or username");
 		}
+
 		try {
 			validateUser(user);
 		} catch (error) {

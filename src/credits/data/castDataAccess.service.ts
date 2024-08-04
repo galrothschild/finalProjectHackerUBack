@@ -88,7 +88,7 @@ export const getCastByAppearanceId = async (
 		});
 	} catch (error) {
 		logger.error("Error getting cast:", error);
-		throw error;
+		return Promise.reject(error);
 	}
 };
 
@@ -106,24 +106,36 @@ export const getCreditsByCastMemberId = async (castMemberID) => {
 		});
 	} catch (error) {
 		logger.error("Error getting credits:", error);
-		throw error;
+		return Promise.reject(error);
 	}
 };
 
 export const getCastMember = async (id) => {
 	try {
-		const castAppearancesFromTMDB = await getCreditsByCastMemberFromTMDB(id);
-		for (const credit of castAppearancesFromTMDB) {
-			if (credit.media_type === "tv") {
-				await saveTVShow(credit.id);
-			} else if (credit.media_type === "movie") {
-				await saveMovie(credit.id);
-			}
-		}
 		const castMember = await CastModel.findOne({ id }).lean();
 		return castMember;
 	} catch (error) {
 		logger.error("Error getting cast member:", error);
-		throw error;
+		return Promise.reject(error);
+	}
+};
+
+export const loadCastMemberCredits = async (id) => {
+	try {
+		const castAppearancesFromTMDB = await getCreditsByCastMemberFromTMDB(id);
+		const promises = castAppearancesFromTMDB.map((credit) => {
+			if (credit.media_type === "tv") {
+				return saveTVShow(credit.id);
+			}
+			if (credit.media_type === "movie") {
+				return saveMovie(credit.id);
+			}
+		});
+		await Promise.all(promises);
+
+		return true;
+	} catch (error) {
+		logger.error("Error getting cast member credits:", error);
+		return Promise.reject(error);
 	}
 };

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
 	getCastMember,
 	getCreditsByCastMemberId,
+	loadCastMemberCredits,
 } from "../data/castDataAccess.service.js";
 
 const router = Router();
@@ -30,6 +31,7 @@ router.get("/:id/credits", async (req, res, next) => {
 		if (!castMember) {
 			return res.status(404).send("Cast member not found");
 		}
+		await loadCastMemberCredits(req.params.id);
 		const credits = await getCreditsByCastMemberId(castMember._id);
 		if (credits) {
 			return res.status(200).send(credits);

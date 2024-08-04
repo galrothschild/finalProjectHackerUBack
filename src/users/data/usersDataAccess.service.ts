@@ -45,7 +45,11 @@ export const getUser = async (userId: string) => {
 
 export const updateUser = async (userId: string, user: IUser) => {
 	try {
-		return await UserModel.findByIdAndUpdate(userId, user, { new: true });
+		const updatedUser = await UserModel.findByIdAndUpdate(userId, user, {
+			new: true,
+		});
+		console.log(updatedUser);
+		return updatedUser;
 	} catch (error) {
 		return Promise.reject(error);
 	}
