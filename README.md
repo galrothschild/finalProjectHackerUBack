@@ -1,8 +1,4 @@
-Based on the provided information, here's a draft of the `README.md` for your backend:
-
----
-
-# MERN App Backend
+# MyMovies App Backend
 
 This repository contains the backend code for a MERN stack application that interacts with the TMDB API. It fetches, normalizes, and stores movie and TV show data, as well as manages user authentication and authorization.
 
