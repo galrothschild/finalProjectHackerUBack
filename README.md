@@ -54,7 +54,8 @@ This repository contains the backend code for a MERN stack application that inte
    ```sh
    npm install
    ```
-4. Start the development server:
+4. Add the .env file
+5. Start the development server:
    ```sh
    npm run dev
    ```
