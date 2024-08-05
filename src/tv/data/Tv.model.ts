@@ -148,8 +148,6 @@ const EpisodeSchema = new mongoose.Schema<Episode>({
 	show_id: { type: Number },
 });
 
-export const EpisodeModel = mongoose.model<Episode>("Episode", EpisodeSchema);
-
 const TVShowSchema = new mongoose.Schema({
 	name: { type: String, required: true },
 	backdrop_path: { type: String, required: false },
